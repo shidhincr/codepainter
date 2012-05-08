@@ -4,7 +4,9 @@
 	},
     "dependencies": {
         "esprima": "*",
-        "optimist": "*"
+        "mocha": "*",
+        "optimist": "*",
+        "should": "*"
     },
     "description": "A JavaScript beautifier that can infer coding style from a sample",
     "name": "codepainter", 
