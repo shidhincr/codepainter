@@ -38,17 +38,17 @@ module.exports.infer = function (sample, callback) {
     sample.pipe(tokenizer);
 
     rules.forEach(function (rule) {
-        rule.infer(tokenizer, function (error, value) {
+        rule.infer(tokenizer, function (value) {
             style[rule.name] = value;
         });
     });
 	tokenizer.on('end',function(){
-		callback(null, style);
+		callback(style);
 	});
     sample.resume();
 };
 
-module.exports.transform = function (input, style, output, callback) {
+module.exports.transform = function (input, style, output) {
     var enabledRules = [],
         left = rules.length,
         tokenizer = new Tokenizer(),
@@ -80,10 +80,6 @@ module.exports.transform = function (input, style, output, callback) {
     } else {
         tokenizer.pipe(serializer);
     }
-
-    serializer.on('end', function () {
-        callback(null);
-    });
 
     input.resume();
 };

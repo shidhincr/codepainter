@@ -54,11 +54,7 @@ else
     output = fs.createWriteStream(argv.output);
 
 function transform(style) {
-    codepainter.transform(input, style, output, function (error) {
-        if (error) {
-            throw error;
-        }
-    });
+    codepainter.transform(input, style, output);
 }
 
 try {
@@ -76,14 +72,7 @@ try {
 		sample.pause();
 		sample.setEncoding('utf-8');
     
-		codepainter.infer(sample, function (error, style) {
-
-			if (error) {
-				throw error;
-			}
-
-			transform(style);
-		});
+		codepainter.infer(sample, transform);
 	}
 } catch (e) {
 	console.error( 'Error: ' + e.message );
