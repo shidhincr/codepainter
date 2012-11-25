@@ -1,29 +1,50 @@
-const Pipe = require('./lib/Pipe'),
+const fs = require('fs'),
+      Pipe = require('./lib/Pipe'),
       rules = require('./lib/rules'),
       Serializer = require('./lib/Serializer'),
       Tokenizer = require('./lib/Tokenizer');
 
+function convertStyle ( style ) {
+	
+	if ( typeof style === 'string'	) {
+		
+		try {
+			style = JSON.parse(style);
+		} catch (e) {
+			try {
+				style = fs.readFileSync ( __dirname + '/../lib/styles/' + style + '.json' );
+			} catch (e) {
+			
+				msg = style + ' is not a valid style.\n\nValid predefined styles are:\n';
+			
+				var files = fs.readdirSync( __dirname + '/lib/styles/' );
+			
+				for ( var i in files ) {
+					msg += '  ' + files[i].slice(0, -5) + '\n';
+				}
+			
+				throw new Error(msg);
+			}
+		}
+	}
+
+	return style;
+}
+
 module.exports.infer = function (sample, callback) {
-    var left = rules.length,
-        style = {},
+    var style = {},
         tokenizer = new Tokenizer();
 
     sample.pipe(tokenizer);
 
-    if (rules.length > 0) {
-        var left = rules.length;
-        rules.forEach(function (rule) {
-            rule.infer(tokenizer, function (error, value) {
-                style[rule.name] = value;
-                left--;
-                if (left === 0)
-                    callback(null, style);
-            });
+    rules.forEach(function (rule) {
+        rule.infer(tokenizer, function (error, value) {
+            style[rule.name] = value;
         });
-    } else {
-        callback(null, style);
-    }
-
+    });
+	tokenizer.on('end',function(){
+		callback(null, style);
+	});
     sample.resume();
 };
 
@@ -34,6 +55,8 @@ module.exports.transform = function (input, style, output, callback) {
         serializer = new Serializer(),
         streams = [];
 
+	style = convertStyle(style);
+
     rules.forEach(function (rule) {
         if (typeof style[rule.name] !== 'undefined' && style[rule.name] !== null)
             enabledRules.push(rule);
@@ -43,11 +66,11 @@ module.exports.transform = function (input, style, output, callback) {
     serializer.pipe(output);
 
     if (enabledRules.length > 0) {
-        var streams = [];
         streams.push(tokenizer);
 
         for (var i = 0; i < enabledRules.length - 1; i++)
             streams.push(new Pipe());
+		
         streams.push(serializer);
 
         for (var i = 0; i < enabledRules.length; i++) {
