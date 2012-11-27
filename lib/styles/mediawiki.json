@@ -9,9 +9,4 @@
 	"LastEmptyLine"               :"present",
 	"TrailingWhitespaces"         :"strip",
 	"SpacesInParens"              :"present"
-	
-//	"QuoteType": "single", // MW does not care
-//	"Comments":"line", // should enforce line comments (except for documentation blocks)
-//	"SpaceAfterNamedFunctions": "omitted" // should remove spaces between function name and param list
-
 }

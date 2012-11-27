@@ -4,15 +4,23 @@ const fs = require('fs'),
       Serializer = require('./lib/Serializer'),
       Tokenizer = require('./lib/Tokenizer');
 
+/**
+ * Converts the style string into an object.
+ * 
+ * First tries to parse the style string as a JSON string. If that does not work,
+ * tries interpret the style string as the name of a predefined style and load
+ * the respective style file. If that does not work either, throws an error.
+ * 
+ */
 function convertStyle ( style ) {
 	
-	if ( typeof style === 'string'	) {
+	if ( ( typeof style === 'string' ) ) {
 		
 		try {
 			style = JSON.parse(style);
 		} catch (e) {
 			try {
-				style = fs.readFileSync ( __dirname + '/../lib/styles/' + style + '.json' );
+				style = require ( __dirname + '/lib/styles/' + style + '.json' );
 			} catch (e) {
 			
 				msg = style + ' is not a valid style.\n\nValid predefined styles are:\n';
@@ -50,7 +58,6 @@ module.exports.infer = function (sample, callback) {
 
 module.exports.transform = function (input, style, output) {
     var enabledRules = [],
-        left = rules.length,
         tokenizer = new Tokenizer(),
         serializer = new Serializer(),
         streams = [];
@@ -66,6 +73,9 @@ module.exports.transform = function (input, style, output) {
     serializer.pipe(output);
 
     if (enabledRules.length > 0) {
+		
+		tokenizer.registerRules( enabledRules );
+		
         streams.push(tokenizer);
 
         for (var i = 0; i < enabledRules.length - 1; i++)
