@@ -24,6 +24,14 @@ The style can still be specified manually with a JSON string as the *--style* ar
 
 > ./bin/codepaint --style '{ "QuoteType": "double" }' < input.js > output.js
 
+Or specify one of the predefined styles (currently only 'mediawiki' supported):
+
+> ./bin/codepaint --style mediawiki < input.js > output.js
+
+Or a file containing a JSON string:
+
+> ./bin/codepaint --stylefile < style.json > < input.js > output.js
+
 Supported style properties
 --------------------------
 
