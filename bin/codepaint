@@ -1,7 +1,10 @@
 #!/usr/bin/env node
-const fs = require('fs');
-const optimist = require('optimist');
-const codepainter = require('../codepainter');
+
+var fs = require('fs'),
+    path = require('path'),
+    spawn = require('child_process').spawn,
+    optimist = require('optimist'),
+    codepainter = require('../codepainter');
 
 var argv = optimist.options({
     'input': {
@@ -18,7 +21,7 @@ var argv = optimist.options({
     },
     'sample': {
         alias: 's',
-        describe: 'Code sample path to infer the style from',
+        describe: 'Code sample path from which to infer the style',
         type: 'string'
     },
     'style': {
@@ -29,11 +32,6 @@ var argv = optimist.options({
         describe: 'File containing a JSON string describing the coding style',
         type: 'string'
     }
-}).check(function (argv) {
-	if ( typeof argv.sample === 'undefined' && typeof argv.style === 'undefined' && typeof argv.stylefile === 'undefined' ){
-		throw new Error( 'You have to specify either a sample file or a style string or a style file.' );
-	}
-    return true;
 })
 .usage('CodePainter beautifies JavaScript.\nUsage: $0 [options]')
 .argv;
@@ -48,34 +46,84 @@ if (argv.input === 'stdin') {
 input.setEncoding('utf-8');
 
 var output;
-if (argv.output === 'stdout')
+if (argv.output === 'stdout') {
     output = process.stdout;
-else
+} else {
     output = fs.createWriteStream(argv.output);
+}
 
 function transform(style) {
     codepainter.transform(input, style, output);
 }
 
-try {
-	if (typeof argv.style !== 'undefined') {
-	
-		transform(argv.style);
-
-	} else if (typeof argv.stylefile !== 'undefined') {
-
-		transform(fs.readFileSync (argv.stylefile));
-
-	} else {
-		var sample;
-		sample = fs.createReadStream(argv.sample);
-		sample.pause();
-		sample.setEncoding('utf-8');
-    
-		codepainter.infer(sample, transform);
-	}
-} catch (e) {
-	console.error( 'Error: ' + e.message );
-	optimist.showHelp( console.error );
+function parseValue( value ) {
+    value = value.toLowerCase();
+    if( value === 'true' ) {
+        return true;
+    }
+    if( value === 'false' ) {
+        return false;
+    }
+    var iValue = parseInt( value, 10 );
+    if( iValue == value ) {
+        return iValue;
+    }
+    return value;
 }
 
+function convertEditorConfigPropsToObject( props ) {
+    var result = {};
+    props = props.match( /[^\s=]+\s*=\s*[^\s=]+/g );
+    for( var i = 0; i < props.length; i++ ) {
+        var pair = props[i].split('=');
+        result[ pair[0] ] = parseValue( pair[1] );
+    }
+    return result;
+}
+
+try {
+    if (typeof argv.style !== 'undefined') {
+
+        transform(argv.style);
+
+    } else if (typeof argv.stylefile !== 'undefined') {
+
+        transform(fs.readFileSync(argv.stylefile));
+
+    } else {
+
+        var style = {},
+            ec = spawn('../editorconfig-core/bin/release/editorconfig', [ path.resolve( argv.input )]);
+
+        ec.stdout.setEncoding('utf8');
+        ec.stdout.on('data', function( data ) {
+            style = convertEditorConfigPropsToObject( data );
+        });
+
+        ec.on('close', function(code) {
+            var keys = Object.keys( style );
+            if( keys.length ) {
+
+                transform( style );
+
+            } else if( typeof argv.sample !== 'undefined' ) {
+
+                var sample = fs.createReadStream(argv.sample);
+                sample.pause();
+                sample.setEncoding('utf-8');
+
+                codepainter.infer(sample, transform);
+
+            } else {
+
+                throw new Error( 'You must specify one of the following: ' +
+                    '.editorconfig file, sample file, style string or style file.' );
+
+            }
+        });
+
+    }
+} catch (e) {
+    console.error( 'Error: ' + e.message );
+    optimist.showHelp( console.error );
+}

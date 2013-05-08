@@ -1,34 +1,42 @@
 {
-	"bin": {
-		"codepaint": "./bin/codepaint"
-	},
-    "dependencies": {
-        "esprima": "*",
-        "mocha": "*",
-        "optimist": "*",
-        "should": "*"
+  "name": "codepainter",
+  "version": "0.1.0",
+  "author": "Jakub Wieczorek <jakubw@jakubw.net>",
+  "description": "A JavaScript beautifier that can infer coding style from a sample",
+  "contributors": [
+    {
+      "name": "Jakub Wieczorek",
+      "email": "jakubw@jakubw.net",
+      "web": "http://jakubw.net"
     },
-    "description": "A JavaScript beautifier that can infer coding style from a sample",
-    "name": "codepainter", 
-    "main": "./codepainter",
-    "licenses": [
-    	{
-    		"type": "MIT",
-    		"url": "http://github.com/fawek/codepainter/raw/master/LICENSE"
-    	}
-    ],
-    "maintainers": [
-    	{
-    		"name": "Jakub Wieczorek",
-    		"email": "jakubw@jakubw.net",
-    		"web": "http://jakubw.net"
-    	}
-    ],
-    "repositories": [
-    	{
-    		"type": "git",
-    		"url": "http://github.com/fawek/codepainter.git"
-    	}
-    ],
-    "version": "0.0.1"
+    {
+      "name": "Jed Hunsaker",
+      "email": "jed.hunsaker[at]gmail.com"
+    }
+  ],
+  "bin": {
+    "codepaint": "./bin/codepaint"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "main": "./codepainter",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/jedhunsaker/codepainter.git"
+  },
+  "keywords": [
+    "code",
+    "formatting",
+    "style",
+    "editorconfig"
+  ],
+  "dependencies": {
+    "esprima": "1.0.x",
+    "mocha": "1.9.x",
+    "optimist": "0.4.x",
+    "should": "1.2.x",
+    "glob": "3.2.x"
+  },
+  "license": "MIT"
 }
