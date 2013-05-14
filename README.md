@@ -28,15 +28,19 @@ transforms the input.js file using formatting style from sample.js and writes th
 
 The style can still be specified manually with a JSON string as the *--style* argument:
 
-> ./bin/codepaint --style '{ "QuoteType": "double" }' < input.js > output.js
+> ./bin/codepaint --style '{ "quote_type": "double" }' < input.js > output.js
 
-Or specify one of the predefined styles (currently only 'mediawiki' supported):
+Or specify one of the predefined styles:
 
-> ./bin/codepaint --style mediawiki < input.js > output.js
+> ./bin/codepaint --style idiomatic < input.js > output.js
 
 Or a file containing a JSON string:
 
 > ./bin/codepaint --stylefile < style.json > < input.js > output.js
+
+Or have it use the file's EditorConfig settings:
+
+> ./bin/codepaint < input.js > output.js
 
 Supported style properties
 --------------------------
