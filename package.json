@@ -19,7 +19,6 @@
     "codepaint": "./bin/codepaint"
   },
   "scripts": {
-    "preinstall": "npm -g mocha",
     "test": "mocha"
   },
   "main": "./codepainter",
@@ -35,6 +34,7 @@
   ],
   "dependencies": {
     "esprima": "1.0.x",
+    "mocha": "1.9.x",
     "optimist": "0.4.x",
     "should": "1.2.x",
     "glob": "3.2.x"
