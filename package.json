@@ -1,6 +1,6 @@
 {
   "name": "codepainter",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Jakub Wieczorek <jakubw@jakubw.net>",
   "description": "A JavaScript beautifier that can infer coding style from a sample",
   "contributors": [
@@ -16,7 +16,8 @@
   ],
   "main": "./codepainter",
   "bin": {
-    "codepaint": "./bin/codepaint"
+    "codepaint": "./bin/codepaint",
+    "codepainter": "./bin/codepaint"
   },
   "scripts": {
     "test": "mocha"
