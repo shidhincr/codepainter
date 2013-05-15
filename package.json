@@ -20,9 +20,7 @@
     "codepainter": "./bin/codepaint"
   },
   "scripts": {
-    "test": "mocha",
-    "install": "./editorconfig-core/cmake -DMSVC_MD=ON .",
-    "release": "./editorconfig-core/msbuild /p:Configuration=Release"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
