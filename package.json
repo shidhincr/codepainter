@@ -1,6 +1,6 @@
 {
   "name": "codepainter",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "author": "Jakub Wieczorek <jakubw@jakubw.net>",
   "description": "A JavaScript beautifier that can infer coding style from a sample",
   "contributors": [
@@ -20,9 +20,10 @@
     "codepainter": "./bin/codepaint"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "install": "./editorconfig-core/cmake -DMSVC_MD=ON .",
+    "release": "./editorconfig-core/msbuild /p:Configuration=Release"
   },
-  "main": "./codepainter",
   "repository": {
     "type": "git",
     "url": "http://github.com/jedhunsaker/codepainter.git"
@@ -34,12 +35,16 @@
     "editorconfig"
   ],
   "dependencies": {
-    "colorize": "0.1.x",
-    "commander": "1.0.x",
-    "esprima": "1.0.x",
-    "glob": "3.2.x",
-    "mocha": "1.9.x",
-    "should": "1.2.x"
+    "cli-color": "~0.2.2",
+    "commander": "~1.1.1",
+    "esprima": "~1.0.2",
+    "glob": "~3.2.1",
+    "node.extend": "~1.0.6"
   },
+  "devDependencies": {
+    "mocha": "1.9.x",
+    "should": "~1.2.2"
+  },
+  "engine": "node >= 0.10.6",
   "license": "MIT"
 }

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
-var colorize = require('colorize');
+var clc = require('cli-color');
+var extend = require('node.extend');
 var fs = require('fs');
 var path = require('path');
 var	program = require('commander');
@@ -9,167 +10,206 @@ var spawn = require('child_process').spawn;
 var codepainter = require('../codepainter');
 
 
-program
-	.version(JSON.parse(fs.readFileSync(__dirname + '/../package.json', 'utf8')).version)
-	.usage('[options] input output\n\n  CodePainter beautifies JavaScript.')
-	.option('-e, --editor-config',			"use input file's EditorConfig settings")
-	.option('-i, --infer <file>',			'code sample to infer')
-	.option('-s, --setting <key>=<value>',	'an individual setting', setting)
-	.option('-p, --predef <name>',			'a CodePainter predefined style')
-	.option('-j, --json <file>',			'JSON file with style settings')
-	.option('-C, --no-color',				'disable color escape codes');
-
 var settings = {};
-
-function keyValue(val, store) {
-	val = val.split('=');
-	try {
-		val[1] = JSON.parse(val[1]);
-	} catch(e){}
-	store[val[0]] = val[1];
-	return val;
-}
 
 function setting(val) {
   return keyValue(val, settings);
 }
 
+function keyValue(val, store) {
+	val = val.split('=');
+	store[ val[ 0 ]] = parseValue( val[ 1 ]);
+	return val;
+}
+
+function parseValue( value ){
+	try {
+		return JSON.parse( value );
+	} catch(e){
+		return value;
+	}
+}
+
+program
+	.version(JSON.parse(fs.readFileSync(__dirname + '/../package.json', 'utf8')).version)
+	.usage('[options] <input> <output>\n\n  CodePainter beautifies JavaScript.')
+	.option('-e, --editor-config',			"use input file's EditorConfig settings")
+	.option('-i, --infer <file>',			'code sample to infer')
+	.option('-s, --setting <key>=<value>',	'an individual setting', setting)
+	.option('-p, --predef <name>',			'specify predefined style (idiomatic|...)')
+	.option('-j, --json <file>',			'JSON file with style settings')
+	.option('-C, --no-color',				'disable color escape codes')
+	.parse( process.argv );
+
+
 program.on('--help', function(){
 	console.log('  Examples:');
 	console.log('');
-	console.log('    $ codepaint input.js output.js');
-	console.log('    $ codepaint -e input.js output.js');
-	console.log('    $ codepaint -i mycode.js input.js output.js');
-	console.log('    $ codepaint -s indent_style=space -s indent_size=4 input.js output.js');
-	console.log('    $ codepaint -p idiomatic input.js output.js');
-	console.log('    $ codepaint -j company_style.json input.js output.js');
+	console.log('    $', clc.cyan('codepaint input.js output.js'));
+	console.log('    $ codepaint %s input.js output.js', clc.cyan('-e'));
+	console.log('    $ codepaint %s input.js output.js', clc.cyan('-i mycode.js'));
+	console.log('    $ codepaint %s input.js output.js', clc.cyan('-s indent_style=space -s indent_size=4'));
+	console.log('    $ codepaint %s input.js output.js', clc.cyan('-p idiomatic'));
+	console.log('    $ codepaint %s input.js output.js', clc.cyan('-j company_style.json'));
 	console.log('');
 });
-
-program.parse(process.argv);
-
-var cconsole = colorize.console;
 
 var arglen = program.args.length;
 if (arglen !== 2) {
 	if (program.rawArgs.length > 2) {
 		switch( arglen ) {
 			case 0:
-				cconsole.log('\n#red[Error: missing required parameters: input, output]');
+				error('missing required parameters: input, output');
 				break;
 			case 1:
-				cconsole.log('\n#red[Error: missing required parameter: output]');
+				error('missing required parameter: output');
 				break;
 			default:
-				cconsole.log('\n#red[Error: too many parameters specified]');
+				error('too many parameters specified');
 				break;
 		}
 	}
-	program.outputHelp();
-	process.exit(1);
+}
+
+function error( msg ){
+	msg = 'Error: ' + msg;
+	if( config.useColors ) {
+		msg = clc.red.bold( msg );
+	}
+	console.log( '\n  ' + msg, arguments[ 1 ] );
+	program.help();
 }
 
 var script = fs.realpathSync(__dirname + '/../codepainter.js');
 
 var config = {
-	input: program.input,
-	output: program.output,
 	useEditorConfig: program.editorConfig,
-	infer: program.infer,
 	predef: program.predef,
-	json: program.json,
 	settings: settings,
 	useColors: program.color
 };
 
+config = extend( config, {
+	input: resolveCheckPath( program.args[0] ),
+	output: path.resolve( program.args[1] ),
+	infer: program.infer && resolveCheckPath( program.infer ),
+	json: program.json && resolveCheckPath( program.json )
+});
+
+function resolveCheckPath( p ){
+	if( typeof p === 'undefined' ){
+		return;
+	}
+	var resolvedPath = path.resolve( p );
+	if( ! fs.existsSync( resolvedPath )){
+		error( 'path %s does not exist', p );
+	}
+	return resolvedPath;
+}
+
+settings = {};
+
+if( program.infer ){
+	var stream = fs.createReadStream( program.infer );
+	stream.pause();
+	stream.setEncoding('utf-8');
+	codepainter.infer( stream, function(){
+		getEditorConfigSettings();
+	});
+	stream.resume();
+} else {
+	getEditorConfigSettings();
+}
+
+function getEditorConfigSettings(){
+	if( ! program.editorConfig ){
+		cascadeSettings();
+	}
+	//var ecPath = resolveCheckPath( __dirname + '/../editorconfig-core/bin/release/editorconfig' );
+	var ec = spawn('C:\\Program Files (x86)\\editorconfig\\bin\\editorconfig.exe', [ config.input ]);
+	ec.stdout.setEncoding('utf8');
+	ec.stdout.on('data', function( data ) {
+		settings = extend( settings, convertEditorConfigPropsToObject( data ));
+		cascadeSettings();
+	});
+	ec.stderr.on('data', function (data) {
+		console.log('stderr: ' + data);
+	});
+	ec.on('close', function (code) {
+		console.log('child process exited with code ' + code);
+	});
+}
+
+function convertEditorConfigPropsToObject( props ) {
+	var result = {};
+	props = props.match( /[^\s=]+\s*=\s*[^\s=]+/g );
+	for( var i = 0; i < props.length; i++ ) {
+		var pair = props[i].split('=');
+		result[ pair[0] ] = parseValue( pair[1] );
+	}
+	return result;
+}
+
+function cascadeSettings(){
+	try {
+
+		if( program.predef ){
+			var path = __dirname + '/../lib/styles/' + program.predef + '.json';
+			settings = extend( settings, fs.readFileSync( resolveCheckPath( path ), 'utf8' ));
+		}
+		if( program.json ){
+			settings = extend( settings, fs.readFileSync( resolveCheckPath( program.json ), 'utf8' ));
+		}
+		if( config.settings ){
+			settings = extend( settings, config.settings );
+		}
+
+		console.log( clc.cyan( JSON.stringify( settings )));
+
+	} catch( e ) {
+		error( e.message );
+		program.help();
+	}
+}
+
+// program.help();
+
+
+// function readFileContents( path ){
+// 	var stream = fs.createReadStream( path );
+// 	stream.pause();
+// 	stream.setEncoding('utf-8');
+
+// }
+
+
+
+
+// program.help();
+
 // var input;
-// if (argv.input === 'stdin') {
-//     input = process.stdin;
+// if (config.input === 'stdin') {
+// 	input = process.stdin;
 // } else {
-//     input = fs.createReadStream(argv.input);
-//     input.pause();
+// 	input = fs.createReadStream(config.input);
+// 	input.pause();
 // }
 // input.setEncoding('utf-8');
 
 // var output;
-// if (argv.output === 'stdout') {
-//     output = process.stdout;
+// if (config.output === 'stdout') {
+// 	output = process.stdout;
 // } else {
-//     output = fs.createWriteStream(argv.output);
+// 	output = fs.createWriteStream(config.output);
 // }
 
 // function transform(style) {
-//     codepainter.transform(input, style, output);
+// 	codepainter.transform(input, style, output);
 // }
 
-// function parseValue( value ) {
-//     value = value.toLowerCase();
-//     if( value === 'true' ) {
-//         return true;
-//     }
-//     if( value === 'false' ) {
-//         return false;
-//     }
-//     var iValue = parseInt( value, 10 );
-//     if( iValue == value ) {
-//         return iValue;
-//     }
-//     return value;
-// }
 
-// function convertEditorConfigPropsToObject( props ) {
-//     var result = {};
-//     props = props.match( /[^\s=]+\s*=\s*[^\s=]+/g );
-//     for( var i = 0; i < props.length; i++ ) {
-//         var pair = props[i].split('=');
-//         result[ pair[0] ] = parseValue( pair[1] );
-//     }
-//     return result;
-// }
 
-// try {
-//     if (typeof argv.style !== 'undefined') {
+//transform(argv.style);
 
-//         transform(argv.style);
 
-//     } else if (typeof argv.stylefile !== 'undefined') {
-
-//         transform(fs.readFileSync(argv.stylefile));
-
-//     } else {
-
-//         var style = {},
-//             ec = spawn('../editorconfig-core/bin/release/editorconfig', [ path.resolve( argv.input )]);
-
-//         ec.stdout.setEncoding('utf8');
-//         ec.stdout.on('data', function( data ) {
-//             style = convertEditorConfigPropsToObject( data );
-//         });
-
-//         ec.on('close', function(code) {
-//             var keys = Object.keys( style );
-//             if( keys.length ) {
-
-//                 transform( style );
-
-//             } else if( typeof argv.sample !== 'undefined' ) {
-
-//                 var sample = fs.createReadStream(argv.sample);
-//                 sample.pause();
-//                 sample.setEncoding('utf-8');
-
-//                 codepainter.infer(sample, transform);
-
-//             } else {
-
-//                 throw new Error( 'You must specify one of the following: ' +
-//                     '.editorconfig file, sample file, style string or style file.' );
-
-//             }
-//         });
-
-//     }
-// } catch (e) {
-//     console.error( 'Error: ' + e.message );
-//     optimist.showHelp( console.error );
-// }
+//transform(fs.readFileSync(argv.stylefile));
