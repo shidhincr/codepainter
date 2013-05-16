@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 var clc = require('cli-color');
+var extend = require('node.extend');
 var fs = require('fs');
 var glob = require('glob');
 var path = require('path');
