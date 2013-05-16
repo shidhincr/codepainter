@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 var clc = require('cli-color');
+var crypto = require('crypto');
 var extend = require('node.extend');
 var fs = require('fs');
 var glob = require('glob');
@@ -176,6 +177,10 @@ function cascadeStyles(){
 var filesMatched = 0;
 
 function traverseGlobs( style ) {
+	console.log('');
+	console.log('  Transforming files...');
+	console.log('');
+	var globCallbacks = 0;
 	for( var i = 0; i < config.globs.length; i++ ){
 		var globPattern = config.globs[ i ];
 		var job = glob( globPattern, null, globCallback );
@@ -186,6 +191,9 @@ function traverseGlobs( style ) {
 	}
 	function globCallback( e, filePaths ){
 		filesMatched += filePaths.length;
+		if( ++globCallbacks === config.globs.length && filesMatched === 0 ){
+			displayFinalMessage();
+		}
 	}
 }
 
@@ -218,7 +226,7 @@ function convertEditorConfigPropsToObject( props ) {
 var filesTransformed = 0;
 
 function transform( inputPath, style ){
-	var tempPath = inputPath + '.tmp';
+	var tempPath = createTempPath( inputPath );
 	var output = fs.createWriteStream( tempPath );
 	var input = fs.createReadStream( inputPath );
 	input.pause();
@@ -231,6 +239,11 @@ function transform( inputPath, style ){
 		});
 	});
 	input.resume();
+}
+
+function createTempPath( inputPath ){
+	return path.dirname( inputPath ) + path.sep +
+		'_' + crypto.randomBytes(4).readUInt32LE(0) + '.tmp';
 }
 
 function displayFinalMessage() {
