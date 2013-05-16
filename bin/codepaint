@@ -6,7 +6,7 @@ var extend = require('node.extend');
 var fs = require('fs');
 var glob = require('glob');
 var path = require('path');
-var	program = require('commander');
+var program = require('commander');
 var spawn = require('child_process').spawn;
 
 var codepainter = require('../codepainter');
@@ -46,13 +46,13 @@ program
 program.on('--help', function(){
 	console.log('  Examples:');
 	console.log('');
-	console.log('    $', clc.cyan('codepaint "**.js"'));
-	console.log('    $ codepaint', clc.cyan('"**view.js" "**model.js"'));
-	console.log('    $ codepaint %s "**.js"', clc.cyan('-i mycode.js'));
-	console.log('    $ codepaint %s "**.js"', clc.cyan('-p idiomatic'));
-	console.log('    $ codepaint %s "**.js"', clc.cyan('-j company_style.json'));
-	console.log('    $ codepaint %s "**.js"', clc.cyan('-s indent_style=space -s indent_size=4'));
-	console.log('    $ codepaint %s "**.js"', clc.cyan('-e /usr/local/bin/editorconfig'));
+	console.log('    $', clc.cyan('codepaint "**/*.js"'));
+	console.log('    $ codepaint', clc.cyan('"**/*view.js" "**/*model.js"'));
+	console.log('    $ codepaint %s "**/*.js"', clc.cyan('-i mycode.js'));
+	console.log('    $ codepaint %s "**/*.js"', clc.cyan('-p idiomatic'));
+	console.log('    $ codepaint %s "**/*.js"', clc.cyan('-j company_style.json'));
+	console.log('    $ codepaint %s "**/*.js"', clc.cyan('-s indent_style=space -s indent_size=4'));
+	console.log('    $ codepaint %s "**/*.js"', clc.cyan('-e /usr/local/bin/editorconfig'));
 	console.log('');
 });
 
@@ -180,37 +180,52 @@ function traverseGlobs( style ) {
 	console.log('');
 	console.log('  Transforming files...');
 	console.log('');
-	var globCallbacks = 0;
-	for( var i = 0; i < config.globs.length; i++ ){
-		var globPattern = config.globs[ i ];
-		var job = glob( globPattern, null, globCallback );
-		job.on( 'match', onGlobMatch );
+	var allFiles = [];
+	config.globs.forEach(function( globPattern ){
+		var files = glob.sync( globPattern );
+		allFiles.push.apply( allFiles, files.filter( filterOutExisting ));
+	});
+	if( allFiles.length === 0 ){
+		displayFinalMessage();
+		return;
+	} else {
+		filesMatched = allFiles.length;
+		transformSync();
 	}
-	function onGlobMatch( inputPath ){
-		applyEditorConfigSettingsAndTransform( inputPath, style );
+	function filterOutExisting( file ){
+		return allFiles.indexOf( file ) === -1;
 	}
-	function globCallback( e, filePaths ){
-		filesMatched += filePaths.length;
-		if( ++globCallbacks === config.globs.length && filesMatched === 0 ){
+	function transformSync(){
+		if( allFiles.length === 0 ){
 			displayFinalMessage();
+			return;
 		}
+		var inputPath = allFiles.pop();
+		applyEditorConfigSettingsAndTransform( inputPath, style, function(){
+			transformSync();
+		});
 	}
 }
 
-function applyEditorConfigSettingsAndTransform( inputPath, style ){
+function applyEditorConfigSettingsAndTransform( inputPath, style, callback ){
 	if( ! program.editorConfig ){
-		transform( inputPath, style );
+		transform( inputPath, style, onTransformEnd );
 		return;
 	}
 	var ec = spawn( config.editorConfigPath, [ inputPath ]);
 	ec.stdout.setEncoding('utf8');
 	ec.stdout.on('data', function( data ) {
 		var editorConfigStyle = convertEditorConfigPropsToObject( data );
-		transform( inputPath, extend( style, editorConfigStyle ));
+		transform( inputPath, extend( style, editorConfigStyle ), onTransformEnd );
 	});
 	ec.stderr.on('data', function (data) {
 		console.log('stderr: ' + data);
 	});
+	function onTransformEnd(){
+		if( typeof callback === 'function' ){
+			callback();
+		}
+	}
 }
 
 function convertEditorConfigPropsToObject( props ) {
@@ -225,25 +240,34 @@ function convertEditorConfigPropsToObject( props ) {
 
 var filesTransformed = 0;
 
-function transform( inputPath, style ){
+function transform( inputPath, style, callback ){
 	var tempPath = createTempPath( inputPath );
 	var output = fs.createWriteStream( tempPath );
 	var input = fs.createReadStream( inputPath );
 	input.pause();
 	input.setEncoding('utf-8');
 	codepainter.transform( input, style, output, function(){
-		fs.rename( tempPath, inputPath, function(){
-			if( ++filesTransformed === filesMatched ){
-				displayFinalMessage();
-			}
+		fs.unlink( inputPath, function( err ){
+			if( err ) throw err;
+			fs.rename( tempPath, inputPath, function( err ){
+				if( err ) throw err;
+				if( ++filesTransformed === filesMatched ){
+					displayFinalMessage();
+				}
+				if( typeof callback === 'function'){
+					callback();
+				}
+			});
 		});
 	});
 	input.resume();
 }
 
 function createTempPath( inputPath ){
-	return path.dirname( inputPath ) + path.sep +
-		'_' + crypto.randomBytes(4).readUInt32LE(0) + '.tmp';
+	return [
+		path.dirname( inputPath ),
+		'_' + crypto.randomBytes(4).readUInt32LE(0) + '.tmp'
+	].join( path.sep );
 }
 
 function displayFinalMessage() {

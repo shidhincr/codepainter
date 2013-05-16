@@ -48,7 +48,9 @@ module.exports = {
 		input.pipe( tokenizer );
 		serializer.pipe( output );
 		serializer.on( 'end', function() {
-			callback();
+			if( typeof callback === 'function' ) {
+				callback();
+			}
 		} );
 
 		if( enabledRules.length > 0 ) {
