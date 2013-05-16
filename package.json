@@ -36,8 +36,7 @@
     "cli-color": "~0.2.2",
     "commander": "~1.1.1",
     "esprima": "~1.0.2",
-    "glob": "~3.2.1",
-    "node.extend": "~1.0.6"
+    "glob": "~3.2.1"
   },
   "devDependencies": {
     "mocha": "1.9.x",
