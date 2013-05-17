@@ -15,33 +15,33 @@ var codepainter = require('../codepainter');
 var style = {};
 
 function setting(val) {
-  return keyValue(val, style);
+	return keyValue(val, style);
 }
 
 function keyValue(val, store) {
 	val = val.split('=');
-	store[ val[ 0 ]] = parseValue( val[ 1 ]);
+	store[val[0]] = parseValue(val[1]);
 	return val;
 }
 
-function parseValue( value ){
+function parseValue(value){
 	try {
-		return JSON.parse( value );
+		return JSON.parse(value);
 	} catch(e){
-		return value;
-	}
+			return value;
+		}
 }
 
 program
-	.version(JSON.parse(fs.readFileSync(__dirname + '/../package.json', 'utf8')).version)
-	.usage('[options] "<glob>" ["<glob>"...]\n\n  CodePainter beautifies JavaScript.')
-	.option('-i, --infer <path>',			'code sample to infer')
-	.option('-p, --predef <name>',			'specify predefined style (idiomatic|...)')
-	.option('-j, --json <path>',			'JSON file with style settings')
-	.option('-s, --style <key>=<value>',	'an individual style setting', setting)
-	.option('-e, --editor-config <path>',	'path to EditorConfig core binary')
-	.option('-C, --no-color',				'disable color escape codes')
-	.parse( process.argv );
+.version(JSON.parse(fs.readFileSync(__dirname + '/../package.json', 'utf8')).version)
+.usage('[options] "<glob>" ["<glob>"...]\n\n  CodePainter beautifies JavaScript.')
+.option('-i, --infer <path>',			'code sample to infer')
+.option('-p, --predef <name>',			'specify predefined style (idiomatic|...)')
+.option('-j, --json <path>',			'JSON file with style settings')
+.option('-s, --style <key>=<value>',	'an individual style setting', setting)
+.option('-e, --editor-config <path>',	'path to EditorConfig core binary')
+.option('-C, --no-color',				'disable color escape codes')
+.parse(process.argv);
 
 program.on('--help', function(){
 	console.log('  Examples:');
@@ -56,50 +56,50 @@ program.on('--help', function(){
 	console.log('');
 });
 
-var config = { useColors: program.color };
+var config = {useColors : program.color};
 
-function error( msg ){
+function error(msg){
 	msg = 'Error: ' + msg;
-	if( config.useColors ) {
-		msg = clc.red( msg );
+	if (config.useColors) {
+		msg = clc.red(msg);
 	}
 	msg = '\n  ' + msg;
-	if( typeof arguments[ 1 ] !== 'undefined' ) {
-		console.log( msg, arguments[ 1 ] );
+	if (typeof arguments[1] !== 'undefined') {
+		console.log(msg, arguments[1]);
 	} else {
-		console.log( msg );
+		console.log(msg);
 	}
 	program.help();
 }
 
-config = extend( config, {
-	infer: program.infer && resolveCheckPath( program.infer ),
-	predef: program.predef && resolveCheckPath( __dirname + '/../lib/styles/' + program.predef + '.json' ),
-	json: program.json && resolveCheckPath( program.json ),
-	editorConfigPath: program.editorConfig && resolveCheckPath( program.editorConfig ),
-	style: style,
-	globs: program.args
+config = extend(config, {
+	infer : program.infer && resolveCheckPath(program.infer),
+	predef : program.predef && resolveCheckPath(__dirname + '/../lib/styles/' + program.predef + '.json'),
+	json : program.json && resolveCheckPath(program.json),
+	editorConfigPath : program.editorConfig && resolveCheckPath(program.editorConfig),
+	style : style,
+	globs : program.args
 });
 
-function resolveCheckPath( p ){
-	if( typeof p === 'undefined' ){
+function resolveCheckPath(p){
+	if (typeof p === 'undefined'){
 		return;
 	}
-	var resolvedPath = path.resolve( p );
-	if( ! fs.existsSync( resolvedPath )){
-		error( 'path %s does not exist', p );
+	var resolvedPath = path.resolve(p);
+	if ( ! fs.existsSync(resolvedPath)){
+		error('path %s does not exist', p);
 	}
 	return resolvedPath;
 }
 
 style = {};
 
-if( program.infer ){
-	var stream = fs.createReadStream( program.infer );
+if (program.infer){
+	var stream = fs.createReadStream(program.infer);
 	stream.pause();
 	stream.setEncoding('utf-8');
-	codepainter.infer( stream, function( inferredStyle ){
-		reportStyle( inferredStyle, 'Inferred style');
+	codepainter.infer(stream, function(inferredStyle){
+		reportStyle(inferredStyle, 'Inferred style');
 		cascadeStyles();
 	});
 	stream.resume();
@@ -107,24 +107,24 @@ if( program.infer ){
 	cascadeStyles();
 }
 
-function reportStyle( styleObj, styleType ){
-	if( Object.keys( styleObj ).length === 0 ){
+function reportStyle(styleObj, styleType){
+	if (Object.keys(styleObj).length === 0){
 		return;
 	}
 	console.log('');
-	console.log( '  ' + styleType + ':' );
+	console.log('  ' + styleType + ':');
 	var color;
-	for( var key in styleObj ){
-		if( styleObj.hasOwnProperty( key )){
-			var msg = key + ' = ' + styleObj[ key ];
-			if( key in style ) {
-				if( style[ key ] === styleObj[ key ]){
+	for (var key in styleObj){
+		if (styleObj.hasOwnProperty(key)){
+			var msg = key + ' = ' + styleObj[key];
+			if (key in style) {
+				if (style[key] === styleObj[key]){
 					msg = '= ' + msg;
 					color = clc.blackBright;
-				} else if( styleObj[ key ] === null ){
+				} else if (styleObj[key] === null){
 					msg = '   x ' + msg;
-					delete style[ key ];
-					console.log( config.useColors ? clc.red( msg ) : msg );
+					delete style[key];
+					console.log(config.useColors ? clc.red(msg) : msg);
 					continue;
 				} else {
 					msg = '* ' + msg;
@@ -134,8 +134,8 @@ function reportStyle( styleObj, styleType ){
 				msg = '+ ' + msg;
 				color = clc.green;
 			}
-			style[ key ] = styleObj[ key ];
-			console.log( '   ' + ( config.useColors ? color( msg ) : msg ));
+			style[key] = styleObj[key];
+			console.log('   ' + (config.useColors ? color(msg) : msg));
 		}
 	}
 }
@@ -143,43 +143,43 @@ function reportStyle( styleObj, styleType ){
 function cascadeStyles(){
 	try {
 
-		if( program.predef ){
+		if (program.predef){
 			var path = __dirname + '/../lib/styles/' + program.predef + '.json';
-			var predefStyle = JSON.parse( fs.readFileSync( path ), 'utf8' );
-			reportStyle( predefStyle, program.predef + ' style' );
+			var predefStyle = JSON.parse(fs.readFileSync(path), 'utf8');
+			reportStyle(predefStyle, program.predef + ' style');
 		}
-		if( program.json ){
-			var jsonStyle = JSON.parse( fs.readFileSync( program.json ), 'utf8' );
-			reportStyle( jsonStyle, 'Supplied JSON file' );
+		if (program.json){
+			var jsonStyle = JSON.parse(fs.readFileSync(program.json), 'utf8');
+			reportStyle(jsonStyle, 'Supplied JSON file');
 		}
-		if( config.style ){
-			reportStyle( config.style, 'Inline styles' );
+		if (config.style){
+			reportStyle(config.style, 'Inline styles');
 		}
-		if( program.editorConfig ){
+		if (program.editorConfig){
 			console.log('');
 			console.log('  Editor Config:');
 			var msg = '   + applied on a file-by-file basis';
-			console.log( config.useColors ? clc.green( msg ) : msg );
+			console.log(config.useColors ? clc.green(msg) : msg);
 		}
 
-	} catch( e ) {
-		error( 'JSON: ' + e.message );
-		program.help();
-	}
+	} catch(e) {
+			error('JSON: ' + e.message);
+			program.help();
+		}
 
-	traverseGlobs( style );
+	traverseGlobs(style);
 }
 
 var filesMatched = 0;
 
-function traverseGlobs( style ) {
+function traverseGlobs(style) {
 	var inputs = [];
-	config.globs.forEach(function( globPattern ){
-		var files = glob.sync( globPattern );
-		inputs.push.apply( inputs, files.filter( filterOutExisting ));
+	config.globs.forEach(function(globPattern){
+		var files = glob.sync(globPattern);
+		inputs.push.apply(inputs, files.filter(filterOutExisting));
 	});
-	if( ! inputs.length || ( config.globs.length && program.rawArgs.length === 3 )){
-		displayFinalMessage( inputs.length, 'matched' );
+	if ( ! inputs.length || (config.globs.length && program.rawArgs.length === 3)){
+		displayFinalMessage(inputs.length, 'matched');
 		program.help();
 	} else {
 		filesMatched = inputs.length;
@@ -187,67 +187,67 @@ function traverseGlobs( style ) {
 		console.log('  Transforming files...');
 		transformSync();
 	}
-	function filterOutExisting( file ){
-		return inputs.indexOf( file ) === -1;
+	function filterOutExisting(file){
+		return inputs.indexOf(file) === - 1;
 	}
 	function transformSync(){
-		if( inputs.length === 0 ){
-			displayFinalMessage( filesTransformed, 'transformed' );
+		if (inputs.length === 0){
+			displayFinalMessage(filesTransformed, 'transformed');
 			return;
 		}
 		var inputPath = inputs.pop();
-		applyEditorConfigSettingsAndTransform( inputPath, style, function(){
+		applyEditorConfigSettingsAndTransform(inputPath, style, function(){
 			transformSync();
 		});
 	}
 }
 
-function applyEditorConfigSettingsAndTransform( inputPath, style, callback ){
-	if( ! program.editorConfig ){
-		transform( inputPath, style, onTransformEnd );
+function applyEditorConfigSettingsAndTransform(inputPath, style, callback){
+	if ( ! program.editorConfig){
+		transform(inputPath, style, onTransformEnd);
 		return;
 	}
-	var ec = spawn( config.editorConfigPath, [ inputPath ]);
+	var ec = spawn(config.editorConfigPath, [inputPath]);
 	ec.stdout.setEncoding('utf8');
-	ec.stdout.on('data', function( data ) {
-		var editorConfigStyle = convertEditorConfigPropsToObject( data );
-		transform( inputPath, extend( style, editorConfigStyle ), onTransformEnd );
+	ec.stdout.on('data', function(data) {
+		var editorConfigStyle = convertEditorConfigPropsToObject(data);
+		transform(inputPath, extend(style, editorConfigStyle), onTransformEnd);
 	});
-	ec.stderr.on('data', function (data) {
+	ec.stderr.on('data', function(data) {
 		console.log('stderr: ' + data);
 	});
 	function onTransformEnd(){
-		if( typeof callback === 'function' ){
+		if (typeof callback === 'function'){
 			callback();
 		}
 	}
 }
 
-function convertEditorConfigPropsToObject( props ) {
+function convertEditorConfigPropsToObject(props) {
 	var result = {};
-	props = props.match( /[^\s=]+\s*=\s*[^\s=]+/g );
-	for( var i = 0; i < props.length; i++ ) {
+	props = props.match(/[^\s=]+\s*=\s*[^\s=]+/g);
+	for (var i = 0; i < props.length; i++) {
 		var pair = props[i].split('=');
-		result[ pair[0] ] = parseValue( pair[1] );
+		result[pair[0]] = parseValue(pair[1]);
 	}
 	return result;
 }
 
 var filesTransformed = 0;
 
-function transform( inputPath, style, callback ){
-	var tempPath = createTempPath( inputPath );
-	var output = fs.createWriteStream( tempPath );
-	var input = fs.createReadStream( inputPath );
+function transform(inputPath, style, callback){
+	var tempPath = createTempPath(inputPath);
+	var output = fs.createWriteStream(tempPath);
+	var input = fs.createReadStream(inputPath);
 	input.pause();
 	input.setEncoding('utf-8');
-	codepainter.transform( input, style, output, function(){
-		fs.unlink( inputPath, function( err ){
-			if( err ) throw err;
-			fs.rename( tempPath, inputPath, function( err ){
-				if( err ) throw err;
+	codepainter.transform(input, style, output, function(){
+		fs.unlink(inputPath, function(err){
+			if (err) throw err;
+			fs.rename(tempPath, inputPath, function(err){
+				if (err) throw err;
 				filesTransformed++;
-				if( typeof callback === 'function'){
+				if (typeof callback === 'function'){
 					callback();
 				}
 			});
@@ -256,22 +256,22 @@ function transform( inputPath, style, callback ){
 	input.resume();
 }
 
-function createTempPath( inputPath ){
+function createTempPath(inputPath){
 	return [
-		path.dirname( inputPath ),
+	path.dirname(inputPath),
 		'_' + crypto.randomBytes(4).readUInt32LE(0) + '.tmp'
-	].join( path.sep );
+	].join(path.sep);
 }
 
-function displayFinalMessage( n, verb ) {
+function displayFinalMessage(n, verb) {
 	console.log('');
-	var msg = '  REPORT: ' + n + ' file' + (( n === 1 ) ? '' : 's' );
+	var msg = '  REPORT: ' + n + ' file' + ((n === 1) ? '' : 's');
 	msg += ' ' + verb;
-	if( n > 0 && verb === 'transformed' ) {
+	if (n > 0 && verb === 'transformed') {
 		msg += ' successfully';
 	}
-	if( config.useColors ) {
-		msg = clc.magenta( msg );
+	if (config.useColors) {
+		msg = clc.magenta(msg);
 	}
-	console.log( msg );
+	console.log(msg);
 }
