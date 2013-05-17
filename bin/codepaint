@@ -172,6 +172,7 @@ function cascadeStyles(){
 }
 
 var filesMatched = 0;
+var filesFailed = 0;
 
 function traverseGlobs(style) {
 	var inputs = [];
@@ -197,7 +198,14 @@ function traverseGlobs(style) {
 			return;
 		}
 		var inputPath = inputs.pop();
+		var timer = setTimeout(function(){
+			console.log(clc.red('  Timed out: ' + inputPath));
+			filesTransformed--;
+			filesFailed++;
+			transformSync();
+		}, 2000);
 		applyEditorConfigSettingsAndTransform(inputPath, style, function(){
+			clearTimeout(timer);
 			transformSync();
 		});
 	}
@@ -212,6 +220,8 @@ function applyEditorConfigSettingsAndTransform(inputPath, style, callback){
 	ec.stdout.setEncoding('utf8');
 	ec.stdout.on('data', function(data) {
 		var editorConfigStyle = convertEditorConfigPropsToObject(data);
+		//editorConfigStyle.tab_width = 4;
+		delete editorConfigStyle.tab_width; //TODO: Fix when EC core is fixed
 		transform(inputPath, extend(style, editorConfigStyle), onTransformEnd);
 	});
 	ec.stderr.on('data', function(data) {
@@ -225,12 +235,16 @@ function applyEditorConfigSettingsAndTransform(inputPath, style, callback){
 }
 
 function convertEditorConfigPropsToObject(props) {
+	if(!props){
+		console.log(props);
+		return {};
+	}
 	var result = {};
 	props = props.match(/[^\s=]+\s*=\s*[^\s=]+/g);
-	for (var i = 0; i < props.length; i++) {
-		var pair = props[i].split('=');
+	props.forEach(function(prop){
+		var pair = prop.split('=');
 		result[pair[0]] = parseValue(pair[1]);
-	}
+	});
 	return result;
 }
 
@@ -241,7 +255,7 @@ function transform(inputPath, style, callback){
 	var output = fs.createWriteStream(tempPath);
 	var input = fs.createReadStream(inputPath);
 	input.pause();
-	input.setEncoding('utf-8');
+	input.setEncoding('utf8');
 	codepainter.transform(input, style, output, function(){
 		fs.unlink(inputPath, function(err){
 			if (err) throw err;
@@ -270,6 +284,9 @@ function displayFinalMessage(n, verb) {
 	msg += ' ' + verb;
 	if (n > 0 && verb === 'transformed') {
 		msg += ' successfully';
+	}
+	if (filesFailed) {
+		msg += '. ' + filesFailed + ' timed out.';
 	}
 	if (config.useColors) {
 		msg = clc.magenta(msg);
