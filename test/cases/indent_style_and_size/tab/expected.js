@@ -19,3 +19,12 @@ switch ( true ){
 		}
 		break;
 }
+if (true)
+	var x = 5;
+while (true)
+	break;
+for (var i = 0; i < 10; i++)
+	break;
+do {
+	break;
+} while (true);

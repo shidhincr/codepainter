@@ -60,6 +60,7 @@ You can see the usage in the CLI directly by typing `codepaint` or `codepaint --
     $ codepaint "**/*.js"
 
 This doesn't transform any files, but it does show you how many files would be affected by the glob you've provided.
+Globs absolutely *must* be in quotes or you will experience unexpected behavior!
 
     $ codepaint -i infer.js "**/*.js"
 

@@ -19,3 +19,14 @@ x >>>= y;
 x &= y;
 x ^= y;
 x |= y;
+
+switch(true) {
+    case 'foo' :
+        break;
+    case true :
+        break;
+    default :
+        break;
+}
+
+var x = (true) ? 4 : 2;
