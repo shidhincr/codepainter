@@ -1,5 +1,4 @@
-Code Painter
-============
+# Code Painter
 
 [![Build Status](https://secure.travis-ci.org/jedhunsaker/codepainter.png?branch=master)](http://travis-ci.org/jedhunsaker/codepainter)
 
@@ -13,37 +12,125 @@ It also uses [EditorConfig](http://editorconfig.org/) to define coding style.
 
 The name is inspired by Word's Format Painter, which does a similar job for rich text.
 
-Usage
------
+## Installation
 
-For now, it can only be used as a command-line tool but a Web version is in the works.
+    $ npm install codepainter
 
-> ./bin/codepaint -i input.js -s sample.js -o output.js
+To access the command globally, do a global install:
 
-transforms the input.js file using formatting style from sample.js and writes the output to output.js
+    $ npm install -g codepainter
 
-*-i* and *-o* can both be ommitted, in that case standard I/O streams will be used.
+*nix users might also have to add the following to their .bashrc file:
 
-> ./bin/codepaint -s sample.js < input.js > output.js
+    PATH=$PATH:/usr/local/share/npm/bin
 
-The style can still be specified manually with a JSON string as the *--style* argument:
+## Usage
 
-> ./bin/codepaint --style '{ "quote_type": "double" }' < input.js > output.js
+You can see the usage in the CLI directly by typing `codepaint` or `codepaint --help`.
 
-Or specify one of the predefined styles:
+```
+  Usage: codepaint [options] "<glob>" ["<glob>"...]
+  Alias: codepainter
 
-> ./bin/codepaint --style idiomatic < input.js > output.js
+  Options:
 
-Or a file containing a JSON string:
+    -h, --help                  output usage information
+    -V, --version               output the version number
+    -i, --infer <path>          code sample to infer
+    -p, --predef <name>         specify predefined style (idiomatic|...)
+    -j, --json <path>           JSON file with style settings
+    -s, --style <key>=<value>   an individual style setting
+    -e, --editor-config <path>  path to EditorConfig core binary
+    -C, --no-color              disable color escape codes
 
-> ./bin/codepaint --stylefile < style.json > < input.js > output.js
+  Examples:
 
-Or have it use the file's EditorConfig settings:
+    $ codepaint "**/*.js"
+    $ codepaint "**/*view.js" "**/*model.js"
+    $ codepaint -i mycode.js "**/*.js"
+    $ codepaint -p idiomatic "**/*.js"
+    $ codepaint -j company_style.json "**/*.js"
+    $ codepaint -s indent_style=space -s indent_size=4 "**/*.js"
+    $ codepaint -e /usr/local/bin/editorconfig "**/*.js"
+```
 
-> ./bin/codepaint < input.js > output.js
+## Examples
 
-Supported style properties
---------------------------
+    $ codepaint "**/*.js"
+
+This doesn't transform any files, but it does show you how many files would be affected by the glob you've provided.
+
+    $ codepaint -i infer.js "**/*.js"
+
+Transforms all .js files under the current directory with the style inferred from infer.js
+
+    $ codepaint -p idiomatic "**/*.js"
+
+Transforms all .js files under the current directory with a CodePainter pre-defined style. In this case, Idiomatic.
+The only other pre-defined styles available at this time are mediawiki and hautelook.
+
+    $ codepaint -j custom.json "**/*.js"
+
+Transforms all .js files under the current directory with a custom style in JSON format.
+
+    $ codepaint -s indent_style=space -s indent_size=4 "**/*.js"
+
+Transforms all .js files under the current directory with 2 settings: `indent_style=space` and `indent_size=4`. You
+can specify as many settings as you want.
+
+    $ codepaint -e /usr/local/bin/editorconfig "**/*.js"
+
+Transforms all .js files under the current directory with the EditorConfig settings defined for each individual file.
+
+Refer to [EditorConfig Core Installation](https://github.com/editorconfig/editorconfig-core#installation)
+for installation instructions and [EditorConfig](http://editorconfig.org/) for more information, including how to
+define and use `.editorconfig` files.
+
+    $ codepaint -i infer.js -p idiomatic -j custom.json -s end_of_line=null -e /usr/local/bin/editorconfig "**/*.js"
+
+As you can see, you can use as many options as you want. CodePainter will cascade your styles and report how the
+cascade has been performed, like so:
+
+```
+  Inferred style:
+   + indent_style = tab
+   + insert_final_newline = true
+   + quote_type = auto
+   + space_after_anonymous_functions = false
+   + space_after_control_statements = false
+   + spaces_around_operators = false
+   + trim_trailing_whitespace = false
+   + spaces_in_brackets = false
+
+  hautelook style:
+   * indent_style = space
+   + indent_size = 4
+   * trim_trailing_whitespace = true
+   + end_of_line = lf
+   = insert_final_newline = true
+   = quote_type = auto
+   * spaces_around_operators = true
+   = space_after_control_statements = false
+   = space_after_anonymous_functions = false
+   * spaces_in_brackets = hybrid
+
+  Supplied JSON file:
+   * space_after_control_statements = true
+   = indent_style = space
+   * indent_size = 3
+
+  Inline styles:
+   x end_of_line = null
+
+  Editor Config:
+   + applied on a file-by-file basis
+
+  Transforming files...
+
+  REPORT: 27 files transformed
+```
+
+## Supported Style Properties
 
 1.  EditorConfig properties: **indent\_style**, **indent\_size**, **trim\_trailing\_whitespace** and
     **insert\_final\_newline**. Refer to EditorConfig's [documentation](http://editorconfig.org/) for more information.
@@ -95,3 +182,8 @@ Supported style properties
 
     The *hybrid* setting mostly reflects Idiomatic style. Refer to
     [Idiomatic Style Manifesto](https://github.com/rwldrn/idiomatic.js/#whitespace).
+
+## License
+
+Released under the MIT license.
+

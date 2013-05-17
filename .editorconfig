@@ -3,14 +3,14 @@ root = true
 [*]
 indent_style = tab
 trim_trailing_whitespace = true
-end_of_line = crlf
+end_of_line = lf
 insert_final_newline = true
 
-quote_type = single
+quote_type = auto
 spaces_around_operators = true
-space_after_control_statements = true
-space_after_anonymous_functions = true
-spaces_in_brackets = hybrid
+space_after_control_statements = false
+space_after_anonymous_functions = false
+spaces_in_brackets = false
 
 [*.md]
 indent_style = space
@@ -19,6 +19,3 @@ indent_size = 4
 [*.{json,yml}]
 indent_style = space
 indent_size = 2
-
-[bin/codepaint]
-end_of_line = lf

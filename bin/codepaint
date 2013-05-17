@@ -58,10 +58,6 @@ program.on('--help', function(){
 
 var config = { useColors: program.color };
 
-if( program.args.length === 0 ) {
-	error('missing required parameter: "<glob>"');
-}
-
 function error( msg ){
 	msg = 'Error: ' + msg;
 	if( config.useColors ) {
@@ -177,30 +173,29 @@ function cascadeStyles(){
 var filesMatched = 0;
 
 function traverseGlobs( style ) {
-	console.log('');
-	console.log('  Transforming files...');
-	console.log('');
-	var allFiles = [];
+	var inputs = [];
 	config.globs.forEach(function( globPattern ){
 		var files = glob.sync( globPattern );
-		allFiles.push.apply( allFiles, files.filter( filterOutExisting ));
+		inputs.push.apply( inputs, files.filter( filterOutExisting ));
 	});
-	if( allFiles.length === 0 ){
-		displayFinalMessage();
-		return;
+	if( ! inputs.length || ( config.globs.length && program.rawArgs.length === 3 )){
+		displayFinalMessage( inputs.length, 'matched' );
+		program.help();
 	} else {
-		filesMatched = allFiles.length;
+		filesMatched = inputs.length;
+		console.log('');
+		console.log('  Transforming files...');
 		transformSync();
 	}
 	function filterOutExisting( file ){
-		return allFiles.indexOf( file ) === -1;
+		return inputs.indexOf( file ) === -1;
 	}
 	function transformSync(){
-		if( allFiles.length === 0 ){
-			displayFinalMessage();
+		if( inputs.length === 0 ){
+			displayFinalMessage( filesTransformed, 'transformed' );
 			return;
 		}
-		var inputPath = allFiles.pop();
+		var inputPath = inputs.pop();
 		applyEditorConfigSettingsAndTransform( inputPath, style, function(){
 			transformSync();
 		});
@@ -251,9 +246,7 @@ function transform( inputPath, style, callback ){
 			if( err ) throw err;
 			fs.rename( tempPath, inputPath, function( err ){
 				if( err ) throw err;
-				if( ++filesTransformed === filesMatched ){
-					displayFinalMessage();
-				}
+				filesTransformed++;
 				if( typeof callback === 'function'){
 					callback();
 				}
@@ -270,16 +263,15 @@ function createTempPath( inputPath ){
 	].join( path.sep );
 }
 
-function displayFinalMessage() {
+function displayFinalMessage( n, verb ) {
 	console.log('');
-	var msg = '  REPORT: ' + filesTransformed + ' file' + (( filesTransformed === 1 ) ? '' : 's' );
-	msg += ' transformed';
-	if( filesTransformed > 0 ) {
+	var msg = '  REPORT: ' + n + ' file' + (( n === 1 ) ? '' : 's' );
+	msg += ' ' + verb;
+	if( n > 0 && verb === 'transformed' ) {
 		msg += ' successfully';
 	}
 	if( config.useColors ) {
 		msg = clc.magenta( msg );
 	}
 	console.log( msg );
-	console.log('');
 }
