@@ -8,7 +8,7 @@ insert_final_newline = true
 
 quote_type = auto
 spaces_around_operators = true
-space_after_control_statements = false
+space_after_control_statements = true
 space_after_anonymous_functions = false
 spaces_in_brackets = false
 
