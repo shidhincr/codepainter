@@ -48,9 +48,10 @@ program.on('--help', function(){
 	console.log('');
 	console.log('    $', clc.cyan('codepaint "**/*.js"'));
 	console.log('    $ codepaint', clc.cyan('"**/*view.js" "**/*model.js"'));
-	console.log('    $ codepaint %s "**/*.js"', clc.cyan('-i mycode.js'));
+	console.log('    $ codepaint %s "**/*.js"', clc.cyan('-i sample.js'));
 	console.log('    $ codepaint %s "**/*.js"', clc.cyan('-p idiomatic'));
-	console.log('    $ codepaint %s "**/*.js"', clc.cyan('-j company_style.json'));
+	console.log('    $ codepaint %s "**/*.js"', clc.cyan('-j custom.json'));
+	console.log('    $ codepaint %s "**/*.js"', clc.cyan('-s quote_type=null'));
 	console.log('    $ codepaint %s "**/*.js"', clc.cyan('-s indent_style=space -s indent_size=4'));
 	console.log('    $ codepaint %s "**/*.js"', clc.cyan('-e /usr/local/bin/editorconfig'));
 	console.log('');
@@ -274,4 +275,5 @@ function displayFinalMessage(n, verb) {
 		msg = clc.magenta(msg);
 	}
 	console.log(msg);
+	console.log('');
 }

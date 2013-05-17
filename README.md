@@ -47,9 +47,10 @@ You can see the usage in the CLI directly by typing `codepaint` or `codepaint --
 
     $ codepaint "**/*.js"
     $ codepaint "**/*view.js" "**/*model.js"
-    $ codepaint -i mycode.js "**/*.js"
+    $ codepaint -i sample.js "**/*.js"
     $ codepaint -p idiomatic "**/*.js"
-    $ codepaint -j company_style.json "**/*.js"
+    $ codepaint -j custom.json "**/*.js"
+    $ codepaint -s quote_type=null "**/*.js"
     $ codepaint -s indent_style=space -s indent_size=4 "**/*.js"
     $ codepaint -e /usr/local/bin/editorconfig "**/*.js"
 ```
@@ -76,7 +77,7 @@ Transforms all .js files under the current directory with a custom style in JSON
     $ codepaint -s indent_style=space -s indent_size=4 "**/*.js"
 
 Transforms all .js files under the current directory with 2 settings: `indent_style=space` and `indent_size=4`. You
-can specify as many settings as you want.
+can specify as many settings as you want and you can set values to `null` to disable them.
 
     $ codepaint -e /usr/local/bin/editorconfig "**/*.js"
 
