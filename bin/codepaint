@@ -186,7 +186,7 @@ function traverseGlobs(style) {
 	} else {
 		filesMatched = inputs.length;
 		console.log('');
-		console.log('  Transforming files...');
+		process.stdout.write('  Transforming files');
 		transformSync();
 	}
 	function filterOutExisting(file){
@@ -194,18 +194,24 @@ function traverseGlobs(style) {
 	}
 	function transformSync(){
 		if (inputs.length === 0){
+			console.log('');
 			displayFinalMessage(filesTransformed, 'transformed');
 			return;
 		}
 		var inputPath = inputs.pop();
 		var timer = setTimeout(function(){
-			console.log(clc.red('  Timed out: ' + inputPath));
+			process.stdout.write(clc.red('.'));
 			filesTransformed--;
 			filesFailed++;
 			transformSync();
 		}, 2000);
-		applyEditorConfigSettingsAndTransform(inputPath, style, function(){
+		applyEditorConfigSettingsAndTransform(path.resolve(inputPath), style, function(isTransformed){
 			clearTimeout(timer);
+			if (isTransformed){
+				process.stdout.write('.');
+			} else {
+				filesTransformed--;
+			}
 			transformSync();
 		});
 	}
@@ -213,23 +219,34 @@ function traverseGlobs(style) {
 
 function applyEditorConfigSettingsAndTransform(inputPath, style, callback){
 	if ( ! program.editorConfig){
-		transform(inputPath, style, onTransformEnd);
+		if (Object.keys(style).length){
+			transform(inputPath, style, onTransformEnd);
+		} else {
+			callback(false);
+		}
 		return;
 	}
 	var ec = spawn(config.editorConfigPath, [inputPath]);
 	ec.stdout.setEncoding('utf8');
+
+	var editorConfigStyle = {};
 	ec.stdout.on('data', function(data) {
-		var editorConfigStyle = convertEditorConfigPropsToObject(data);
-		//editorConfigStyle.tab_width = 4;
-		delete editorConfigStyle.tab_width; //TODO: Fix when EC core is fixed
-		transform(inputPath, extend(style, editorConfigStyle), onTransformEnd);
+		editorConfigStyle = convertEditorConfigPropsToObject(data);
 	});
 	ec.stderr.on('data', function(data) {
 		console.log('stderr: ' + data);
 	});
-	function onTransformEnd(){
+	ec.stdout.on('end', function(){
+		var cascadedStyle = extend(style, editorConfigStyle);
+		if ( ! Object.keys(cascadedStyle).length){
+			callback(false);
+			return;
+		}
+		transform(inputPath, cascadedStyle, onTransformEnd);
+	});
+	function onTransformEnd(isTransformed){
 		if (typeof callback === 'function'){
-			callback();
+			callback(isTransformed);
 		}
 	}
 }
@@ -263,7 +280,7 @@ function transform(inputPath, style, callback){
 				if (err) throw err;
 				filesTransformed++;
 				if (typeof callback === 'function'){
-					callback();
+					callback(true);
 				}
 			});
 		});

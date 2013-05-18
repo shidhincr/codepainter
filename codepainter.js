@@ -49,7 +49,7 @@ module.exports = {
 		serializer.pipe(output);
 		serializer.on('end', function() {
 			if(typeof callback === 'function') {
-				callback();
+				callback(true);
 			}
 		});
 

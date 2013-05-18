@@ -68,7 +68,7 @@ Transforms all .js files under the current directory with the style inferred fro
 
     $ codepaint -p idiomatic "**/*.js"
 
-Transforms all .js files under the current directory with a CodePainter pre-defined style. In this case, Idiomatic.
+Transforms all .js files under the current directory with a Code Painter pre-defined style. In this case, Idiomatic.
 The only other pre-defined styles available at this time are mediawiki and hautelook.
 
     $ codepaint -j custom.json "**/*.js"
@@ -90,7 +90,7 @@ define and use `.editorconfig` files.
 
     $ codepaint -i infer.js -p idiomatic -j custom.json -s end_of_line=null -e /usr/local/bin/editorconfig "**/*.js"
 
-As you can see, you can use as many options as you want. CodePainter will cascade your styles and report how the
+As you can see, you can use as many options as you want. Code Painter will cascade your styles and report how the
 cascade has been performed, like so:
 
 ```
