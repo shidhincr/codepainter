@@ -172,7 +172,7 @@ function cascadeStyles(){
 }
 
 var filesMatched = 0;
-var filesFailed = 0;
+var filesSkipped = 0;
 
 function traverseGlobs(style) {
 	var inputs = [];
@@ -201,16 +201,19 @@ function traverseGlobs(style) {
 		var inputPath = inputs.pop();
 		var timer = setTimeout(function(){
 			process.stdout.write(clc.red('.'));
+			console.log('');
+			console.log(inputPath);
 			filesTransformed--;
-			filesFailed++;
+			filesSkipped++;
 			transformSync();
-		}, 2000);
+		}, 20000);
 		applyEditorConfigSettingsAndTransform(path.resolve(inputPath), style, function(isTransformed){
 			clearTimeout(timer);
 			if (isTransformed){
+				filesTransformed++;
 				process.stdout.write('.');
 			} else {
-				filesTransformed--;
+				filesSkipped++;
 			}
 			transformSync();
 		});
@@ -278,7 +281,6 @@ function transform(inputPath, style, callback){
 			if (err) throw err;
 			fs.rename(tempPath, inputPath, function(err){
 				if (err) throw err;
-				filesTransformed++;
 				if (typeof callback === 'function'){
 					callback(true);
 				}
@@ -302,12 +304,13 @@ function displayFinalMessage(n, verb) {
 	if (n > 0 && verb === 'transformed') {
 		msg += ' successfully';
 	}
-	if (filesFailed) {
-		msg += '. ' + filesFailed + ' timed out.';
+	if (filesSkipped) {
+		msg += '. ' + filesSkipped + ' files skipped.';
 	}
 	if (config.useColors) {
 		msg = clc.magenta(msg);
 	}
 	console.log(msg);
 	console.log('');
+	process.exit();
 }
