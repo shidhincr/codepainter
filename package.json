@@ -3,7 +3,7 @@
   "preferGlobal": true,
   "version": "0.2.9",
   "author": "Jakub Wieczorek <jakubw@jakubw.net>",
-  "description": "A JavaScript beautifier that can infer coding style from a sample",
+  "description": "A JavaScript beautifier that can both infer coding style and transform code to reflect that style. You can also set style preferences explicitly in a variety of ways.",
   "contributors": [
     "Jakub Wieczorek <jakubw@jakubw.net> (http://jakubw.net)",
     "Jed Hunsaker <jed.hunsaker[at]gmail.com>"

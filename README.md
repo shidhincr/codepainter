@@ -1,14 +1,14 @@
 # Code Painter
 
-[![Build Status](https://secure.travis-ci.org/jedhunsaker/codepainter.png?branch=master)](http://travis-ci.org/jedhunsaker/codepainter)
+[![Build Status][]](http://travis-ci.org/jedhunsaker/codepainter)
 
 Code Painter is a JavaScript beautifier that instead of asking you to manually specify the desired formatting style,
 can infer it from a code sample provided by you. This could, for instance, be a code snippet from the same project
 that your new code is supposed to be integrated with.
 
-It uses the excellent [Esprima parser](http://esprima.org/) by [Ariya Hidayat](http://ariya.ofilabs.com/) (thanks!).
+It uses the excellent [Esprima parser][] by [Ariya Hidayat][] (thanks!).
 
-It also uses [EditorConfig](http://editorconfig.org/) to define coding style.
+It also uses [EditorConfig][] to define coding style.
 
 The name is inspired by Word's Format Painter, which does a similar job for rich text.
 
@@ -24,24 +24,27 @@ To access the command globally, do a global install:
 
     PATH=$PATH:/usr/local/share/npm/bin
 
-## Usage
+## CLI Usage
 
 You can see the usage in the CLI directly by typing `codepaint` or `codepaint --help`.
 
 ```
-  Usage: codepaint [options] "<glob>" ["<glob>"...]
-  Alias: codepainter
+$ ./bin/codepaint
+
+  Usage: codepaint [options] "glob" ["glob" ...]
+
+  Code Painter x.x.x beautifies JavaScript.
 
   Options:
 
-    -h, --help                  output usage information
-    -V, --version               output the version number
-    -i, --infer <path>          code sample to infer
-    -p, --predef <name>         specify predefined style (idiomatic|...)
-    -j, --json <path>           JSON file with style settings
-    -s, --style <key>=<value>   an individual style setting
-    -e, --editor-config <path>  path to EditorConfig core binary
-    -C, --no-color              disable color escape codes
+    -h, --help                 output usage information
+    -V, --version              output the version number
+    -i, --infer <path>         code sample to infer
+    -p, --predef <name>        specify predefined style (idiomatic|...)
+    -j, --json <path>          JSON file with style settings
+    -s, --style <key>=<value>  an individual style setting
+    -e, --editor-config        enable rules via EditorConfig
+    -C, --no-color             disable color escape codes
 
   Examples:
 
@@ -52,10 +55,10 @@ You can see the usage in the CLI directly by typing `codepaint` or `codepaint --
     $ codepaint -j custom.json "**/*.js"
     $ codepaint -s quote_type=null "**/*.js"
     $ codepaint -s indent_style=space -s indent_size=4 "**/*.js"
-    $ codepaint -e /usr/local/bin/editorconfig "**/*.js"
+    $ codepaint -e "**/*.js"
 ```
 
-## Examples
+## CLI Examples
 
     $ codepaint "**/*.js"
 
@@ -75,7 +78,7 @@ The only other pre-defined styles available at this time are mediawiki and haute
 
 Transforms all .js files under the current directory with a custom style in JSON format.
 
-    $ codepaint -s indent_style=space -s indent_size=4 "**/*.js"
+    $ codepaint -s indent\_style=space -s indent\_size=4 "**/*.js"
 
 Transforms all .js files under the current directory with 2 settings: `indent_style=space` and `indent_size=4`. You
 can specify as many settings as you want and you can set values to `null` to disable them.
@@ -84,9 +87,8 @@ can specify as many settings as you want and you can set values to `null` to dis
 
 Transforms all .js files under the current directory with the EditorConfig settings defined for each individual file.
 
-Refer to [EditorConfig Core Installation](https://github.com/editorconfig/editorconfig-core#installation)
-for installation instructions and [EditorConfig](http://editorconfig.org/) for more information, including how to
-define and use `.editorconfig` files.
+Refer to [EditorConfig Core Installation][] for installation instructions and [EditorConfig][] for more information,
+including how to define and use `.editorconfig` files.
 
     $ codepaint -i infer.js -p idiomatic -j custom.json -s end_of_line=null -e /usr/local/bin/editorconfig "**/*.js"
 
@@ -127,7 +129,7 @@ cascade has been performed, like so:
   Editor Config:
    + applied on a file-by-file basis
 
-  Transforming files...
+  ...........................
 
   REPORT: 27 files transformed
 ```
@@ -135,7 +137,7 @@ cascade has been performed, like so:
 ## Supported Style Properties
 
 1.  EditorConfig properties: **indent\_style**, **indent\_size**, **trim\_trailing\_whitespace** and
-    **insert\_final\_newline**. Refer to EditorConfig's [documentation](http://editorconfig.org/) for more information.
+    **insert\_final\_newline**. Refer to [EditorConfig's documentation][] for more information.
 
 1.  **quote\_type**: *single*, *double*, *auto*
 
@@ -182,10 +184,16 @@ cascade has been performed, like so:
 
     `(x===4)` -> `( x===4 )` or `( )` -> `()`
 
-    The *hybrid* setting mostly reflects Idiomatic style. Refer to
-    [Idiomatic Style Manifesto](https://github.com/rwldrn/idiomatic.js/#whitespace).
+    The *hybrid* setting mostly reflects Idiomatic style. Refer to [Idiomatic Style Manifesto][].
 
 ## License
 
 Released under the MIT license.
 
+[Build Status]: https://secure.travis-ci.org/jedhunsaker/codepainter.png?branch=master
+[Esprima parser]: http://esprima.org/
+[Ariya Hidayat]: http://ariya.ofilabs.com/
+[EditorConfig]: http://editorconfig.org/
+[EditorConfig's documentation]: http://editorconfig.org/
+[EditorConfig Core Installation]: https://github.com/editorconfig/editorconfig-core#installation
+[Idiomatic Style Manifesto]: https://github.com/rwldrn/idiomatic.js/#whitespace

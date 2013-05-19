@@ -95,8 +95,8 @@ module.exports = {
 	onTransformEnd : function(inputPath, tempPath, callback, isTesting) {
 		if (isTesting) {
 			fs.readFile(tempPath, 'utf-8', function(err, data) {
-				if (err) throw err;
 				fs.unlink(tempPath, function(err2) {
+					if (err) throw err;
 					if (err2) throw err2;
 					if (typeof callback === 'function') {
 						callback(data);
@@ -105,14 +105,11 @@ module.exports = {
 			});
 			return;
 		}
-		fs.unlink(inputPath, function(err){
-			if (err) throw err;
-			fs.rename(tempPath, inputPath, function(err2){
-				if (err2) throw err2;
-				if (typeof callback === 'function'){
-					callback();
-				}
-			});
+		fs.rename(tempPath, inputPath, function(err2){
+			if (err2) throw err2;
+			if (typeof callback === 'function'){
+				callback();
+			}
 		});
 	}
 };
