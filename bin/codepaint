@@ -34,7 +34,7 @@ function parseValue(value){
 
 program
 .version(JSON.parse(fs.readFileSync(__dirname + '/../package.json', 'utf8')).version)
-.usage('[options] "<glob>" ["<glob>"...]\n\n  CodePainter beautifies JavaScript.')
+.usage('[options] "glob" ["glob" ...]\n\n  CodePainter beautifies JavaScript.')
 .option('-i, --infer <path>',			'code sample to infer')
 .option('-p, --predef <name>',			'specify predefined style (idiomatic|...)')
 .option('-j, --json <path>',			'JSON file with style settings')

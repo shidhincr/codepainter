@@ -1,18 +1,12 @@
 {
   "name": "codepainter",
-  "version": "0.2.8",
+  "preferGlobal": true,
+  "version": "0.2.9",
   "author": "Jakub Wieczorek <jakubw@jakubw.net>",
   "description": "A JavaScript beautifier that can infer coding style from a sample",
   "contributors": [
-    {
-      "name": "Jakub Wieczorek",
-      "email": "jakubw@jakubw.net",
-      "web": "http://jakubw.net"
-    },
-    {
-      "name": "Jed Hunsaker",
-      "email": "jed.hunsaker[at]gmail.com"
-    }
+    "Jakub Wieczorek <jakubw@jakubw.net> (http://jakubw.net)",
+    "Jed Hunsaker <jed.hunsaker[at]gmail.com>"
   ],
   "main": "./codepainter",
   "bin": {
@@ -26,6 +20,9 @@
     "type": "git",
     "url": "http://github.com/jedhunsaker/codepainter.git"
   },
+  "bugs" : {
+    "url": "https://github.com/jedhunsaker/codepainter/issues"
+  },
   "keywords": [
     "code",
     "formatting",
@@ -35,6 +32,7 @@
   "dependencies": {
     "cli-color": "~0.2.2",
     "commander": "~1.1.1",
+    "editorconfig": "~0.11.4",
     "esprima": "~1.0.2",
     "glob": "~3.2.1",
     "node.extend": "~1.0.6"
