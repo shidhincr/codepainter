@@ -173,6 +173,7 @@ function cascadeStyles(){
 
 var filesMatched = 0;
 var filesSkipped = 0;
+var filesTransformed = 0;
 
 function traverseGlobs(style) {
 	var inputs = [];
@@ -209,11 +210,11 @@ function traverseGlobs(style) {
 		}, 20000);
 		applyEditorConfigSettingsAndTransform(path.resolve(inputPath), style, function(isTransformed){
 			clearTimeout(timer);
-			if (isTransformed){
+			if (isTransformed === false) {
+				filesSkipped++;
+			} else {
 				filesTransformed++;
 				process.stdout.write('.');
-			} else {
-				filesSkipped++;
 			}
 			transformSync();
 		});
@@ -223,7 +224,7 @@ function traverseGlobs(style) {
 function applyEditorConfigSettingsAndTransform(inputPath, style, callback){
 	if ( ! program.editorConfig){
 		if (Object.keys(style).length){
-			transform(inputPath, style, onTransformEnd);
+			codepainter.transform(inputPath, style, callback);
 		} else {
 			callback(false);
 		}
@@ -245,13 +246,8 @@ function applyEditorConfigSettingsAndTransform(inputPath, style, callback){
 			callback(false);
 			return;
 		}
-		transform(inputPath, cascadedStyle, onTransformEnd);
+		codepainter.transform(inputPath, cascadedStyle, callback);
 	});
-	function onTransformEnd(isTransformed){
-		if (typeof callback === 'function'){
-			callback(isTransformed);
-		}
-	}
 }
 
 function convertEditorConfigPropsToObject(props) {
@@ -266,35 +262,6 @@ function convertEditorConfigPropsToObject(props) {
 		result[pair[0]] = parseValue(pair[1]);
 	});
 	return result;
-}
-
-var filesTransformed = 0;
-
-function transform(inputPath, style, callback){
-	var tempPath = createTempPath(inputPath);
-	var output = fs.createWriteStream(tempPath);
-	var input = fs.createReadStream(inputPath);
-	input.pause();
-	input.setEncoding('utf8');
-	codepainter.transform(input, style, output, function(){
-		fs.unlink(inputPath, function(err){
-			if (err) throw err;
-			fs.rename(tempPath, inputPath, function(err){
-				if (err) throw err;
-				if (typeof callback === 'function'){
-					callback(true);
-				}
-			});
-		});
-	});
-	input.resume();
-}
-
-function createTempPath(inputPath){
-	return [
-	path.dirname(inputPath),
-		'_' + crypto.randomBytes(4).readUInt32LE(0) + '.tmp'
-	].join(path.sep);
 }
 
 function displayFinalMessage(n, verb) {

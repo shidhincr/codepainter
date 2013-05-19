@@ -1,8 +1,8 @@
 var assert = require( 'assert' );
 var fs = require( 'fs' );
 var glob = require( 'glob' );
-var path = require( 'path' );
 var should = require( 'should' );
+var editorconfig = require('editorconfig');
 
 var Pipe = require( '../lib/Pipe' );
 var codepainter = require( '../codepainter' );
@@ -20,13 +20,13 @@ describe( 'Code Painter', function() {
 			testCase = testCase.substr( testCase.lastIndexOf( '/' ) + 1 );
 
 			describe( testCase + ' rule', function() {
-
-				var rule;
-				rules.forEach( function( iRule ) {
-					if( iRule.name === testCase ) {
-						rule = iRule;
+				var Rule;
+				for (var i = 0; i < rules.length; i++) {
+					if( rules[i].prototype.name === testCase ) {
+						Rule = rules[i];
+						break;
 					}
-				});
+				}
 
 				glob( 'test/cases/' + testCase + '/*/*.json', globOptions, function( er2, stylePaths ) {
 					stylePaths.forEach( function( stylePath ) {
@@ -35,11 +35,11 @@ describe( 'Code Painter', function() {
 							styles: JSON.parse( fs.readFileSync( stylePath, 'utf-8' ) )
 						};
 
-						if( setting.styles.disable ) {
+						if (editorconfig.parse(stylePath).test !== true) {
 							return;
 						}
 
-						testInferrance( rule, setting );
+						testInferrance( new Rule(), setting );
 						testTransformation( setting );
 					} );
 				} );
@@ -90,25 +90,10 @@ function testTransformation( setting ) {
 		var inputPath = verifyPath( setting.folder + 'input.js' );
 		var expectedPath = verifyPath( setting.folder + 'expected.js' );
 		var expected = fs.readFileSync( expectedPath, 'utf-8' );
-		var tempPath = setting.folder + 'temp.js';
 
-		transform( inputPath, setting.styles, tempPath, function() {
-			var output = fs.readFileSync( tempPath, 'utf-8' );
+		codepainter.transform(inputPath, setting.styles, function(output) {
 			expected.should.equal( output );
-			fs.unlinkSync( tempPath );
 			done();
-		} );
-	} );
-}
-
-function transform( inputPath, style, outputPath, callback ) {
-	var inputStream = fs.createReadStream( inputPath );
-	inputStream.pause();
-	inputStream.setEncoding( 'utf-8' );
-
-	var outputStream = fs.createWriteStream( outputPath );
-	codepainter.transform( inputStream, style, outputStream, function() {
-		outputStream.on( 'close', callback );
-		outputStream.end();
+		}, true);
 	} );
 }

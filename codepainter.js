@@ -1,4 +1,6 @@
+var crypto = require('crypto');
 var fs = require('fs');
+var path = require('path');
 
 var Pipe = require('./lib/Pipe');
 var rules = require('./lib/rules');
@@ -29,34 +31,35 @@ module.exports = {
 		sample.resume();
 	},
 
-	transform : function(input, style, output, callback) {
-		var enabledRules = [];
-		var tokenizer = new Tokenizer();
-		var serializer = new Serializer();
-		var streams = [];
+	transform : function(inputPath, style, callback, isTesting) {
 
-		style = this.convertStyle(style);
 		if(style.hasOwnProperty('indent_style')) {
 			style.indent_style_and_size = true;
 		}
-		rules.forEach(function(iRule) {
-			if(iRule.name in style) {
-				enabledRules.push(iRule);
+
+		var enabledRules = [];
+		rules.forEach(function(Rule) {
+			if(Rule.prototype.name in style) {
+				enabledRules.push(new Rule());
 			}
 		});
 
+		var input = this.createInputStream(inputPath);
+		var tokenizer = new Tokenizer();
 		input.pipe(tokenizer);
+
+		var tempPath = this.generateTempPath(inputPath);
+		var output = fs.createWriteStream(tempPath);
+		var serializer = new Serializer();
 		serializer.pipe(output);
-		serializer.on('end', function() {
-			if(typeof callback === 'function') {
-				callback(true);
-			}
-		});
+		output.on('close', this.onTransformEnd.bind(
+			this, inputPath, tempPath, callback, isTesting));
 
 		if(enabledRules.length > 0) {
 
 			tokenizer.registerRules(enabledRules);
 
+			var streams = [];
 			streams.push(tokenizer);
 
 			for(var i = 0; i < enabledRules.length - 1; i++)
@@ -75,32 +78,41 @@ module.exports = {
 		input.resume();
 	},
 
-	/**
-	 * Converts the style string into an object.
-	 *
-	 * First tries to parse the style string as a JSON string. If that does not work,
-	 * tries interpret the style string as the name of a predefined style and load
-	 * the respective style file. If that does not work either, throws an error.
-	 *
-	 */
-	convertStyle : function(style) {
-		try {
-			return typeof style === 'string' ? JSON.parse(style) : style;
-		} catch(e) {
-				try {
-					return require(__dirname + '/lib/styles/' + style + '.json');
-				} catch(e2) {
+	createInputStream : function(inputPath) {
+		var stream = fs.createReadStream(inputPath);
+		stream.pause();
+		stream.setEncoding('utf-8');
+		return stream;
+	},
 
-						var msg = style + ' is not a valid style.\n\nValid predefined styles are:\n';
+	generateTempPath : function(inputPath) {
+		return [
+			path.dirname(inputPath),
+			'_' + crypto.randomBytes(4).readUInt32LE(0) + '.tmp'
+		].join(path.sep);
+	},
 
-						var files = fs.readdirSync(__dirname + '/lib/styles/');
-
-						for(var i in files) {
-							msg += '  ' + files[i].slice(0, - 5) + '\n';
-						}
-
-						throw new Error(msg);
+	onTransformEnd : function(inputPath, tempPath, callback, isTesting) {
+		if (isTesting) {
+			fs.readFile(tempPath, 'utf-8', function(err, data) {
+				if (err) throw err;
+				fs.unlink(tempPath, function(err2) {
+					if (err2) throw err2;
+					if (typeof callback === 'function') {
+						callback(data);
 					}
-			}
+				});
+			});
+			return;
+		}
+		fs.unlink(inputPath, function(err){
+			if (err) throw err;
+			fs.rename(tempPath, inputPath, function(err2){
+				if (err2) throw err2;
+				if (typeof callback === 'function'){
+					callback();
+				}
+			});
+		});
 	}
 };
