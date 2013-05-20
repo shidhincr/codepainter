@@ -15,8 +15,8 @@ module.exports = {
 
 		sample.pipe(tokenizer);
 
-		rules.forEach(function(rule) {
-			rule.infer(tokenizer, function(inferredStyle) {
+		rules.forEach(function(Rule) {
+			new Rule().infer(tokenizer, function(inferredStyle) {
 				Object.keys(inferredStyle).forEach(function(key) {
 					style[key] = inferredStyle[key];
 				});
