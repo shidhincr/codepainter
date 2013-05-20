@@ -72,13 +72,17 @@ function testTransformation( setting ) {
 	var folders = setting.folder.split( '/' );
 	setting.name = folders[ folders.length - 2 ];
 	it( 'formats ' + setting.name + ' setting properly', function( done ) {
-		var inputPath = verifyPath( setting.folder + 'input.js' );
 		var expectedPath = verifyPath( setting.folder + 'expected.js' );
-		var expected = fs.readFileSync( expectedPath, 'utf-8' );
-
-		codepainter.transform(inputPath, setting.styles, function(output) {
+		var options = {
+			style : setting.styles,
+			globs : [setting.folder + 'input.js'],
+			isTesting : true
+		};
+		codepainter.transform(options, function(err, output) {
+			if( err ) throw err;
+			var expected = fs.readFileSync( expectedPath, 'utf-8' );
 			expected.should.equal( output );
 			done();
-		}, true);
+		});
 	} );
 }

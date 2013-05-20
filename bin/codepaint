@@ -63,6 +63,8 @@ if (program.rawArgs.length === 2) {
 	program.help();
 }
 
+program.globs = program.args;
+
 var config = {useColors : program.color};
 
 function error(msg){
@@ -168,7 +170,12 @@ function cascadeStyles(){
 		program.help();
 	}
 
-	traverseGlobs(style);
+	program.style = style;
+
+	codepainter.transform(program, function(err) {
+
+	});
+	//traverseGlobs(style);
 }
 
 function traverseGlobs(style) {
@@ -226,7 +233,10 @@ function applyEditorConfigSettingsAndTransform(inputPath, style, callback){
 		callback(false);
 		return;
 	}
-	codepainter.transform(inputPath, cascadedStyle, callback);
+
+	program.style = cascadedStyle;
+
+	codepainter.transform(program, callback);
 }
 
 function displayFinalMessage(n, verb, skipped) {
