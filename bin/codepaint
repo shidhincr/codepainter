@@ -101,14 +101,10 @@ function resolveCheckPath(p){
 style = {};
 
 if (program.infer){
-	var stream = fs.createReadStream(program.infer);
-	stream.pause();
-	stream.setEncoding('utf-8');
 	codepainter.infer(stream, function(inferredStyle){
 		reportStyle(inferredStyle, 'Inferred style');
 		cascadeStyles();
 	});
-	stream.resume();
 } else {
 	cascadeStyles();
 }

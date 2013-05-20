@@ -39,7 +39,7 @@ describe( 'Code Painter', function() {
 							return;
 						}
 
-						testInferrance( new Rule(), setting );
+						testInferrance( Rule, setting );
 						testTransformation( setting );
 					} );
 				} );
@@ -48,16 +48,16 @@ describe( 'Code Painter', function() {
 	} );
 } );
 
-function testInferrance( rule, setting ) {
+function testInferrance( Rule, setting ) {
 	Object.keys( setting.styles ).forEach( function( styleKey ) {
 		var styleValue = setting.styles[ styleKey ];
 		var samplePath = verifyPath( setting.folder + 'sample.js' );
 		if( fs.existsSync( samplePath ) ) {
 			it( 'infers ' + styleKey + ' setting as ' + styleValue, function( done ) {
-				infer( rule, samplePath, function( inferredStyle ) {
+				codepainter.infer( samplePath, function(inferredStyle) {
 					styleValue.should.equal( inferredStyle[ styleKey ] );
 					done();
-				} );
+				}, Rule );
 			} );
 		}
 	} );
@@ -66,21 +66,6 @@ function testInferrance( rule, setting ) {
 function verifyPath( path ) {
 	fs.existsSync( path ).should.be.true;
 	return path;
-}
-
-function infer( rule, samplePath, callback ) {
-	var sampleStream = fs.createReadStream( samplePath );
-	sampleStream.pause();
-	sampleStream.setEncoding( 'utf-8' );
-
-	var tokenizer = new Tokenizer();
-	sampleStream.pipe( tokenizer );
-
-	rule.infer( tokenizer, function( inferredStyle ) {
-		callback( inferredStyle );
-	} );
-
-	sampleStream.resume();
 }
 
 function testTransformation( setting ) {

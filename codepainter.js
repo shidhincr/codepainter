@@ -2,33 +2,23 @@ var crypto = require('crypto');
 var fs = require('fs');
 var path = require('path');
 
+var Inferrer = require('./lib/Inferrer');
 var Pipe = require('./lib/Pipe');
 var rules = require('./lib/rules');
 var Serializer = require('./lib/Serializer');
 var Tokenizer = require('./lib/Tokenizer');
+var Transformer = require('./lib/Transformer');
 
 
 module.exports = {
-	infer : function(sample, callback) {
-		var style = {};
-		var tokenizer = new Tokenizer();
 
-		sample.pipe(tokenizer);
-
-		rules.forEach(function(Rule) {
-			new Rule().infer(tokenizer, function(inferredStyle) {
-				Object.keys(inferredStyle).forEach(function(key) {
-					style[key] = inferredStyle[key];
-				});
-			});
-		});
-
-		tokenizer.on('end', function() {
-			tokenizer.registerRules(style);
-			callback(style);
-		});
-
-		sample.resume();
+	infer : function(samplePath, callback, Rule) {
+		var inferrer = new Inferrer();
+		inferrer.infer( samplePath, function(inferredStyle) {
+			if( typeof callback === 'function' ) {
+				callback( inferredStyle );
+			}
+		}, Rule );
 	},
 
 	transform : function(inputPath, style, callback, isTesting) {
