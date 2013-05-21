@@ -7,7 +7,7 @@ module.exports = {
 		new Inferrer().infer( samplePath, callback, Rule );
 	},
 
-	transform : function(options, callback) {
-		new Transformer().transform( options, callback );
+	transform : function(options) {
+		new Transformer(options).transform();
 	}
 };

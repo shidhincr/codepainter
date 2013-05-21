@@ -9,8 +9,8 @@ var glob = require('glob');
 var path = require('path');
 var program = require('commander');
 
-var codepainter = require('../codepainter');
 var package = require("../package.json");
+var Transformer = require('../lib/Transformer');
 
 
 var style = {};
@@ -77,10 +77,9 @@ function error(msg){
 	} else {
 		console.log(msg);
 	}
-	program.help();
 }
 
-program.reporter = function(styleBefore, styleToMerge, styleType){
+function cascade(styleBefore, styleToMerge, styleType){
 	if (Object.keys(styleToMerge).length === 0){
 		return;
 	}
@@ -108,11 +107,30 @@ program.reporter = function(styleBefore, styleToMerge, styleType){
 		}
 		console.log('   ' + (program.color ? color(msg) : msg));
 	});
-};
+}
 
-codepainter.transform(program, function(err, transformed, skipped) {
+var transformer = new Transformer(program);
+
+transformer.on('cascade', cascade);
+
+transformer.once('transform', function(){
+	process.stdout.write('\n  ');
+});
+
+transformer.on('transform', function(transformed, path){
+	if (transformed % 70 === 0) {
+		process.stdout.write('\n  ');
+	}
+	process.stdout.write('.');
+});
+
+transformer.on('end', function(err, transformed, skipped){
+	console.log('');
+	if (err) error(err.message);
 	displayFinalMessage(transformed, 'transformed', skipped);
 });
+
+transformer.transform();
 
 // function traverseGlobs(style) {
 // 	var filesMatched = 0;

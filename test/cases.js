@@ -7,6 +7,7 @@ var editorconfig = require('editorconfig');
 var Pipe = require( '../lib/Pipe' );
 var codepainter = require( '../codepainter' );
 var rules = require( '../lib/rules' );
+var Transformer = require('../lib/Transformer');
 
 
 describe( 'Code Painter', function() {
@@ -78,11 +79,13 @@ function testTransformation( setting ) {
 			globs : [setting.folder + 'input.js'],
 			isTesting : true
 		};
-		codepainter.transform(options, function(err, output) {
+		var transformer = new Transformer(options);
+		transformer.on('test', function(err, output) {
 			if( err ) throw err;
 			var expected = fs.readFileSync( expectedPath, 'utf-8' );
 			expected.should.equal( output );
 			done();
 		});
+		transformer.transform();
 	} );
 }
