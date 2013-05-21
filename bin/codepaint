@@ -132,44 +132,6 @@ transformer.on('end', function(err, transformed, skipped){
 
 transformer.transform();
 
-// function traverseGlobs(style) {
-// 	var filesMatched = 0;
-// 	var filesSkipped = 0;
-// 	var filesTransformed = 0;
-// 	var inputs = [];
-// 	config.globs.forEach(function(globPattern){
-// 		var files = glob.sync(globPattern);
-// 		inputs.push.apply(inputs, files.filter(filterOutExisting));
-// 	});
-// 	if ( ! inputs.length || (config.globs.length && program.rawArgs.length === 3)){
-// 		displayFinalMessage(inputs.length, 'matched');
-// 		program.help();
-// 	} else {
-// 		filesMatched = inputs.length;
-// 		process.stdout.write('\n  ');
-// 		inputs.forEach(function(inputPath){
-// 			applyEditorConfigSettingsAndTransform(path.resolve(inputPath), style, onTransformEnd);
-// 		});
-// 	}
-// 	function filterOutExisting(file){
-// 		return inputs.indexOf(file) === -1;
-// 	}
-// 	function onTransformEnd(isTransformed) {
-// 		if (isTransformed === false) {
-// 			filesSkipped++;
-// 		} else {
-// 			if (++filesTransformed % 70 === 0) {
-// 				process.stdout.write('\n  ');
-// 			}
-// 			process.stdout.write('.');
-// 		}
-// 		if (filesTransformed + filesSkipped === filesMatched) {
-// 			console.log('');
-// 			displayFinalMessage(filesTransformed, 'transformed', filesSkipped);
-// 		}
-// 	}
-// }
-
 function displayFinalMessage(n, verb, skipped) {
 	console.log('');
 	var msg = '  REPORT: ' + n + ' file' + ((n === 1) ? '' : 's');
