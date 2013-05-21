@@ -59,25 +59,14 @@ program.on('--help', function(){
 	console.log('');
 });
 
-if (program.rawArgs.length === 2) {
+var isStdin = process.stdin.readable && process.stdin.paused;
+
+if (program.rawArgs.length === 2 && !isStdin) {
 	program.help();
 }
 
 program.style = style;
 program.globs = program.args;
-
-function error(msg){
-	msg = 'Error: ' + msg;
-	if (program.color) {
-		msg = clc.red(msg);
-	}
-	msg = '\n  ' + msg;
-	if (typeof arguments[1] !== 'undefined') {
-		console.log(msg, arguments[1]);
-	} else {
-		console.log(msg);
-	}
-}
 
 function cascade(styleBefore, styleToMerge, styleType){
 	if (Object.keys(styleToMerge).length === 0){
@@ -111,26 +100,41 @@ function cascade(styleBefore, styleToMerge, styleType){
 
 var transformer = new Transformer(program);
 
-transformer.on('cascade', cascade);
+if (!isStdin) {
+	transformer.on('cascade', cascade);
 
-transformer.once('transform', function(){
-	process.stdout.write('\n  ');
-});
-
-transformer.on('transform', function(transformed, path){
-	if (transformed % 70 === 0) {
+	transformer.once('transform', function(){
 		process.stdout.write('\n  ');
-	}
-	process.stdout.write('.');
-});
+	});
 
-transformer.on('end', function(err, transformed, skipped){
-	console.log('');
-	if (err) error(err.message);
-	displayFinalMessage(transformed, 'transformed', skipped);
-});
+	transformer.on('transform', function(transformed, path){
+		if (transformed % 70 === 0) {
+			process.stdout.write('\n  ');
+		}
+		process.stdout.write('.');
+	});
+
+	transformer.on('end', function(err, transformed, skipped){
+		console.log('');
+		if (err) error(err.message);
+		displayFinalMessage(transformed, 'transformed', skipped);
+	});
+}
 
 transformer.transform();
+
+function error(msg){
+	msg = 'Error: ' + msg;
+	if (program.color) {
+		msg = clc.red(msg);
+	}
+	msg = '\n  ' + msg;
+	if (typeof arguments[1] !== 'undefined') {
+		console.log(msg, arguments[1]);
+	} else {
+		console.log(msg);
+	}
+}
 
 function displayFinalMessage(n, verb, skipped) {
 	console.log('');
