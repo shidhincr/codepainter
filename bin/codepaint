@@ -59,9 +59,7 @@ program.on('--help', function(){
 	console.log('');
 });
 
-var isStdin = process.stdin.readable && process.stdin.paused;
-
-if (program.rawArgs.length === 2 && !isStdin) {
+if(program.rawArgs.length === 2 && process.stdin.isTTY) {
 	program.help();
 }
 
@@ -100,7 +98,7 @@ function cascade(styleBefore, styleToMerge, styleType){
 
 var transformer = new Transformer(program);
 
-if (!isStdin) {
+if (program.globs.length || process.stdin.isTTY) {
 	transformer.on('cascade', cascade);
 
 	transformer.once('transform', function(){
@@ -115,7 +113,6 @@ if (!isStdin) {
 	});
 
 	transformer.on('end', function(err, transformed, skipped){
-		console.log('');
 		if (err) error(err.message);
 		displayFinalMessage(transformed, 'transformed', skipped);
 	});
