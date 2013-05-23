@@ -112,9 +112,13 @@ if (program.globs.length || process.stdin.isTTY) {
 		process.stdout.write('.');
 	});
 
-	transformer.on('end', function(err, transformed, skipped){
-		if (err) error(err.message);
-		displayFinalMessage(transformed, 'transformed', skipped);
+	transformer.on('error', function(err, inputPath){
+		error(err.message + ' ' + inputPath);
+	});
+
+	transformer.on('end', function(err, transformed, skipped, errored){
+		displayFinalMessage(transformed, skipped, errored);
+		if (err) process.exit(1);
 	});
 }
 
@@ -133,17 +137,12 @@ function error(msg){
 	}
 }
 
-function displayFinalMessage(n, verb, skipped) {
-	console.log('');
-	var msg = '  REPORT: ' + n + ' file' + ((n === 1) ? '' : 's');
-	msg += ' ' + verb;
-	if (skipped) {
-		msg += '. ' + skipped + ' files skipped (no rules to apply).';
-	}
+function displayFinalMessage(transformed, skipped, errored) {
+	console.log('\n');
+	var msg = '  REPORT: %s transformed. %s errored. %s skipped (no rules).';
 	if (program.color) {
 		msg = clc.magenta(msg);
 	}
-	console.log(msg);
+	console.log(msg, transformed, errored, skipped);
 	console.log('');
-	process.exit();
 }
