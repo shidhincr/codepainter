@@ -94,6 +94,7 @@ function cascade(styleBefore, styleToMerge, styleType){
 		}
 		console.log('   ' + (program.color ? color(msg) : msg));
 	});
+	process.stdout.write('\n  ');
 }
 
 var transformer = new Transformer(program);
@@ -101,28 +102,39 @@ var transformer = new Transformer(program);
 if (program.globs.length || process.stdin.isTTY) {
 	transformer.on('cascade', cascade);
 
-	transformer.once('transform', function(){
-		process.stdout.write('\n  ');
-	});
-
 	transformer.on('transform', function(transformed, path){
-		if (transformed % 70 === 0) {
-			process.stdout.write('\n  ');
-		}
-		process.stdout.write('.');
+		writeDot('.');
 	});
 
+	var errors = [];
+	var errorDot = program.color ? clc.red('.') : '.';
 	transformer.on('error', function(err, inputPath){
-		error(err.message + ' ' + inputPath);
+		err.inputPath = inputPath;
+		errors.push(err);
+		writeDot(errorDot);
 	});
 
 	transformer.on('end', function(err, transformed, skipped, errored){
+		if (errors.length) {
+			console.log('');
+		}
+		errors.forEach(function(err2){
+			error(err2.message + ': ' + err2.inputPath);
+		});
 		displayFinalMessage(transformed, skipped, errored);
 		if (err) process.exit(1);
 	});
 }
 
 transformer.transform();
+
+var dotCount = 0;
+function writeDot(dot) {
+	if ( ! ++dotCount%70) {
+		process.stdout.write('\n  ');
+	}
+	process.stdout.write(dot);
+}
 
 function error(msg){
 	msg = 'Error: ' + msg;
@@ -138,7 +150,7 @@ function error(msg){
 }
 
 function displayFinalMessage(transformed, skipped, errored) {
-	console.log('\n');
+	console.log('');
 	var msg = '  REPORT: %s transformed. %s errored. %s skipped (no rules).';
 	if (program.color) {
 		msg = clc.magenta(msg);
