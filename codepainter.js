@@ -1,10 +1,15 @@
-var Inferrer = require('./lib/Inferrer');
+var MultiInferrer = require('./lib/MultiInferrer');
 var Transformer = require('./lib/Transformer');
 
 
 module.exports = {
-	infer : function(samplePath, callback, Rule) {
-		new Inferrer().infer(samplePath, callback, Rule);
+	infer : function(globs, options, callback, Rule) {
+		var inferrer = new MultiInferrer();
+		if (typeof options === 'function') {
+			inferrer.infer(globs, undefined, options, callback);
+		} else {
+			inferrer.infer(globs, options, callback, Rule);
+		}
 	},
 
 	transform : function(options) {

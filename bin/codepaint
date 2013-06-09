@@ -34,10 +34,9 @@ function parseValue(value){
 	}
 }
 
-
 program.on('error', function(err){
     console.log('');
-    console.log(clc.red('  Error:', err.message));
+    console.log(clc.red('  ' + err.name + ':', err.message));
     err.command.outputUsage();
     err.command.outputCommands();
     err.command.outputOptions();
@@ -56,7 +55,6 @@ program
 		.description('Infer coding style from file(s)')
 		.action(infer)
 		.option('-d, --details',        'give a detailed report with trend scores')
-		.option('-e, --export <file>',  'exports result to a JSON file')
 		.on('help', function(cmd){
 			cmd.outputIndented('Examples', [
 				'$ ' + clc.cyan('codepaint infer "**/*.js"'),
@@ -91,23 +89,12 @@ program
 
 
 function infer(args, options) {
-
-	var multiInferrer = new MultiInferrer();
-
-	multiInferrer.infer(args.globs, options, function(paths){
-		console.log(paths);
+	new MultiInferrer().infer(args.globs, options, function(style){
+		console.log(JSON.stringify(style));
 	});
-
-	//process.exit(0);
-
-	//if (cmd.args.globs.length || process.stdin.isTTY) {
-	//	console.log('ready to run');
-	//}
 }
 
 function xform() {
-
-	validate(commands.xform);
 
 	program.options.style = style;
 
