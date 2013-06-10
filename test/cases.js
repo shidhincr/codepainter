@@ -74,18 +74,16 @@ function testTransformation(setting) {
 	setting.name = folders[folders.length - 2];
 	it('formats ' + setting.name + ' setting properly', function(done) {
 		var expectedPath = verifyPath(setting.folder + 'expected.js');
-		var options = {
-			style : setting.styles,
-			globs : [setting.folder + 'input.js'],
-			isTesting : true
-		};
-		var transformer = new Transformer(options);
+		var transformer = new Transformer();
 		transformer.on('test', function(err, output) {
 			if (err) throw err;
 			var expected = fs.readFileSync(expectedPath, 'utf-8');
 			expected.should.equal(output);
 			done();
 		});
-		transformer.transform();
+		transformer.transform(setting.folder + 'input.js', {
+			style : setting.styles,
+			isTesting : true
+		});
 	});
 }
