@@ -261,5 +261,5 @@ Released under the MIT license.
 [EditorConfig's documentation]: http://editorconfig.org/
 [EditorConfig Core Installation]: /editorconfig/editorconfig-core#installation
 [Idiomatic Style Manifesto]: /rwldrn/idiomatic.js/#whitespace
-[.editorconfig]: blob/master/.editorconfig
-[package.json]: blob/master/package.json
+[.editorconfig]: .editorconfig
+[package.json]: package.json
