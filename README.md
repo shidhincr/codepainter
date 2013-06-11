@@ -2,17 +2,19 @@
 
 [![Build Status][]](http://travis-ci.org/jedhunsaker/codepainter)
 
-Code Painter is a JavaScript beautifier that instead of asking you to manually
-specify the desired formatting style, can infer it from a code sample provided
-by you. This could, for instance, be a code snippet from the same project that
-your new code is supposed to be integrated with.
+Code Painter is a JavaScript beautifier that can transform JavaScript files
+into the coding style of your choice. Style settings can be supplied via
+predefined styles, a custom JSON file, command line settings, [EditorConfig][]
+settings or it can even be inferred from one or more sample files. For example,
+you could provide a code snippet from the same project with which the new code
+is intended to integrate.
 
-It uses the excellent [Esprima parser][] by [Ariya Hidayat][] (thanks!).
-
-It also uses [EditorConfig][] to define coding style.
+It uses the excellent [Esprima parser][] by [Ariya Hidayat][] and his
+[contributors][] – thanks!
 
 The name is inspired by Word's Format Painter, which does a similar job for
 rich text.
+
 
 ## Installation
 
@@ -26,72 +28,184 @@ To access the command globally, do a global install:
 
     PATH=$PATH:/usr/local/share/npm/bin
 
+
 ## CLI Usage
 
 You can see the usage in the CLI directly by typing `codepaint` or
 `codepaint --help`.
 
 ```
-$ ./bin/codepaint
+$ codepaint --help
 
-  Usage: codepaint [options] "glob" ["glob" ...]
+  Code Painter beautifies JavaScript.
 
-  Code Painter x.x.x beautifies JavaScript.
+  Usage: codepaint [options] <command>
+
+  Commands:
+
+    infer [options] <globs>...  Infer coding style from file(s)
+    xform [options] <globs>...  Transform file(s) to specified style
 
   Options:
 
-    -h, --help                 output usage information
-    -V, --version              output the version number
-    -i, --infer <path>         code sample to infer
-    -p, --predef <name>        specify predefined style (idiomatic|...)
-    -j, --json <path>          JSON file with style settings
-    -s, --style <key>=<value>  an individual style setting
-    -e, --editor-config        enable rules via EditorConfig
-    -C, --no-color             disable color escape codes
+    -h, --help     output help information
+    -V, --version  output version information
+
+
+$ codepaint infer --help
+
+  Infer coding style from file(s)
+
+  Usage: infer [options] <globs>...
+
+  Options:
+
+    -h, --help     output help information
+    -d, --details  give a detailed report with trend scores
 
   Examples:
 
-    $ codepaint "**/*.js"
-    $ codepaint "**/*view.js" "**/*model.js"
-    $ codepaint -i sample.js "**/*.js"
-    $ codepaint -p idiomatic "**/*.js"
-    $ codepaint -j custom.json "**/*.js"
-    $ codepaint -s quote_type=null "**/*.js"
-    $ codepaint -s indent_style=space -s indent_size=4 "**/*.js"
-    $ codepaint -e "**/*.js"
+    $ codepaint infer "**/*.js"
+    $ codepaint infer "**/*view.js" "**/*model.js"
+    $ codepaint infer %s "**/*.js" -m
+    $ codepaint infer %s "**/*.js" -e inferred.json
+
+
+$ codepaint xform --help
+
+  Transform file(s) to specified style
+
+  Usage: xform [options] <globs>...
+
+  Options:
+
+    -h, --help                 output help information
+    -i, --infer <glob>         code sample(s) to infer
+    -p, --predef <name>        cascade predefined style (e.g., idiomatic)
+    -j, --json <path>          cascade JSON style over predef style
+    -s, --style <key>=<value>  cascade explicit style over JSON
+    -e, --editor-config        cascade EditorConfig style over all others
+
+  Examples:
+
+    $ codepaint xform "**/*.js"
+    $ codepaint xform "**/*view.js" "**/*model.js"
+    $ codepaint xform %s "**/*.js" -i sample.js
+    $ codepaint xform %s "**/*.js" -p idiomatic
+    $ codepaint xform %s "**/*.js" -j custom.json
+    $ codepaint xform %s "**/*.js" -s quote_type=null
+    $ codepaint xform %s "**/*.js" -s indent_style=space -s indent_size=4
+    $ codepaint xform %s "**/*.js" -e
 ```
+
+
+
+## Library Usage
+
+Library usage is intended to be every bit the same as CLI usage, so you can
+expect the same options and arguments that the CLI requires.
+
+The following example infers coding style from `foo.js` and uses that inferred
+style to transform all .js files under the current directory.
+
+```js
+var codepainter = require('codepainter');
+codepainter.infer('foo.js', {details: true}, function(inferredStyle) {
+    codepainter.xform('**/*.js', {json: inferredStyle});
+});
+
+```
+
+'foo.js' could also be an array or any readable stream. `xform` is an alias
+for the `transform` method. You can use either one.
+
+Great, so that's all nice and simple, but maybe you want to do something with
+the output. We start by creating an instance of the Transformer class.
+
+```js
+var Transformer = require('codepainter').Transformer;
+var transformer = new Transformer();
+```
+
+Now, we can listen to any of the following events:
+
+### cascade
+
+Every time one style cascades over another.
+
+```js
+transformer.on('cascade', cascade);
+function cascade(styleBefore, styleToMerge, styleType) {
+    // code here
+}
+```
+
+### transform
+
+Every time a file is transformed.
+
+```js
+transformer.on('transform', function(transformed, path) {
+    // code here
+}
+```
+
+### error
+
+```js
+transformer.on('error', function(err, inputPath) {
+    // code here
+}
+```
+
+### end
+
+When all transformations have taken place.
+
+```js
+transformer.on('end', function(err, transformed, skipped, errored) {
+    // code here
+}
+```
+
 
 ## CLI Examples
 
-    $ codepaint "**/*.js"
+    $ codepaint infer "**/*.js"
+
+Infers coding style from all .js files under the current directory into a
+single JSON object, which you can pipe out to another file if you want. It can
+then be used in a transformation (below).
+
+    $ codepaint xform "**/*.js"
 
 This doesn't transform any files, but it does show you how many files would be
 affected by the glob you've provided. Globs absolutely *must* be in quotes or
 you will experience unexpected behavior!
 
-    $ codepaint -i infer.js "**/*.js"
+    $ codepaint xform -i infer.js "**/*.js"
 
 Transforms all .js files under the current directory with the style inferred
 from infer.js
 
-    $ codepaint -p idiomatic "**/*.js"
+    $ codepaint xform -p idiomatic "**/*.js"
 
 Transforms all .js files under the current directory with a Code Painter
 pre-defined style. In this case, Idiomatic. The only other pre-defined styles
 available at this time are mediawiki and hautelook.
 
-    $ codepaint -j custom.json "**/*.js"
+    $ codepaint xform -j custom.json "**/*.js"
 
 Transforms all .js files under the current directory with a custom style in
 JSON format.
 
-    $ codepaint -s indent\_style=space -s indent\_size=4 "**/*.js"
+    $ codepaint xform -s indent\_style=space -s indent\_size=4 "**/*.js"
 
 Transforms all .js files under the current directory with 2 settings:
 `indent_style=space` and `indent_size=4`. You can specify as many settings as
 you want and you can set values to `null` to disable them.
 
-    $ codepaint -e /usr/local/bin/editorconfig "**/*.js"
+    $ codepaint xform -e /usr/local/bin/editorconfig "**/*.js"
 
 Transforms all .js files under the current directory with the EditorConfig
 settings defined for each individual file.
@@ -100,8 +214,8 @@ Refer to [EditorConfig Core Installation][] for installation instructions and
 [EditorConfig][] for more information, including how to define and use
 `.editorconfig` files.
 
-    $ codepaint -i infer.js -p idiomatic -j custom.json -s end_of_line=null
-    -e /usr/local/bin/editorconfig "**/*.js"
+    $ codepaint xform -i infer.js -p idiomatic -j custom.json
+    -s end_of_line=null -e /usr/local/bin/editorconfig "**/*.js"
 
 As you can see, you can use as many options as you want. Code Painter will
 cascade your styles and report how the cascade has been performed, like so:
@@ -144,6 +258,7 @@ cascade your styles and report how the cascade has been performed, like so:
 
   REPORT: 27 files transformed
 ```
+
 
 ## Supported Style Properties
 
@@ -210,6 +325,7 @@ cascade your styles and report how the cascade has been performed, like so:
     The *hybrid* setting mostly reflects Idiomatic style. Refer to
     [Idiomatic Style Manifesto][].
 
+
 ## Recommended Use
 
 It is highly recommended that you use the EditorConfig approach to painting
@@ -250,6 +366,7 @@ codepaint_git_commit() {
 Any tips on how to improve this process are greatly appreciated. See the
 [package.json][] file for contact information.
 
+
 ## License
 
 Released under the MIT license.
@@ -257,6 +374,7 @@ Released under the MIT license.
 [Build Status]: https://secure.travis-ci.org/jedhunsaker/codepainter.png?branch=master
 [Esprima parser]: http://esprima.org/
 [Ariya Hidayat]: http://ariya.ofilabs.com/
+[contributors]: https://github.com/ariya/esprima/graphs/contributors
 [EditorConfig]: http://editorconfig.org/
 [EditorConfig's documentation]: http://editorconfig.org/
 [EditorConfig Core Installation]: /editorconfig/editorconfig-core#installation

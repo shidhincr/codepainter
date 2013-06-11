@@ -22,7 +22,11 @@ util.inherits(CodePainter, CodePainterObject, {
 	transform : function() {
 		var transformer = new Transformer();
 		transformer.transform.apply(transformer, arguments);
-	}
+	},
+
+	Inferrer : MultiInferrer,
+
+	Transformer : Transformer
 });
 
 module.exports = new CodePainter();
