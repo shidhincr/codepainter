@@ -99,8 +99,10 @@ $ codepaint xform --help
 ```
 
 
-
 ## Library Usage
+
+`.infer(<path|glob|globs|ReadableStream>[,options][,callback])`
+`.transform(<path|glob|globs|ReadableStream>[,options])`
 
 Library usage is intended to be every bit the same as CLI usage, so you can
 expect the same options and arguments that the CLI requires.
@@ -110,7 +112,7 @@ style to transform all .js files under the current directory.
 
 ```js
 var codepainter = require('codepainter');
-codepainter.infer('foo.js', {details: true}, function(inferredStyle) {
+codepainter.infer('foo.js', {}, function(inferredStyle) {
     codepainter.xform('**/*.js', {json: inferredStyle});
 });
 
