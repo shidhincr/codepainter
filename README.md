@@ -113,7 +113,7 @@ style to transform all .js files under the current directory.
 
 ```js
 var codepainter = require('codepainter');
-codepainter.infer('foo.js', {}, function(inferredStyle) {
+codepainter.infer('foo.js', function(inferredStyle) {
     codepainter.xform('**/*.js', {json: inferredStyle});
 });
 
@@ -170,6 +170,10 @@ transformer.on('end', function(err, transformed, skipped, errored) {
     // code here
 }
 ```
+
+Of course, none of these events will fire if you don't perform the transform:
+
+`transformer.transform(globs, options);`
 
 
 ## CLI Examples
