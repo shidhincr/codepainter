@@ -102,6 +102,7 @@ $ codepaint xform --help
 ## Library Usage
 
 `.infer(<path|glob|globs|ReadableStream>[,options][,callback])`
+
 `.transform(<path|glob|globs|ReadableStream>[,options])`
 
 Library usage is intended to be every bit the same as CLI usage, so you can
