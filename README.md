@@ -3,7 +3,7 @@
 [![Build Status][]](http://travis-ci.org/jedhunsaker/codepainter)
 
 Code Painter is a JavaScript beautifier that can transform JavaScript files
-into the coding style of your choice. Style settings can be supplied via
+into the formatting style of your choice. Style settings can be supplied via
 predefined styles, a custom JSON file, command line settings, [EditorConfig][]
 settings or it can even be inferred from one or more sample files. For example,
 you could provide a code snippet from the same project with which the new code
@@ -43,7 +43,7 @@ $ codepaint --help
 
   Commands:
 
-    infer [options] <globs>...  Infer coding style from file(s)
+    infer [options] <globs>...  Infer formatting style from file(s)
     xform [options] <globs>...  Transform file(s) to specified style
 
   Options:
@@ -54,7 +54,7 @@ $ codepaint --help
 
 $ codepaint infer --help
 
-  Infer coding style from file(s)
+  Infer formatting style from file(s)
 
   Usage: infer [options] <globs>...
 
@@ -73,7 +73,7 @@ $ codepaint infer --help
 
 $ codepaint xform --help
 
-  Transform file(s) to specified style
+  Transform file(s) to specified formatting style
 
   Usage: xform [options] <globs>...
 
@@ -108,8 +108,8 @@ $ codepaint xform --help
 Library usage is intended to be every bit the same as CLI usage, so you can
 expect the same options and arguments that the CLI requires.
 
-The following example infers coding style from `foo.js` and uses that inferred
-style to transform all .js files under the current directory.
+The following example infers formatting style from `foo.js` and uses that
+inferred style to transform all .js files under the current directory.
 
 ```js
 var codepainter = require('codepainter');
@@ -180,7 +180,7 @@ Of course, none of these events will fire if you don't perform the transform:
 
     $ codepaint infer "**/*.js"
 
-Infers coding style from all .js files under the current directory into a
+Infers formatting style from all .js files under the current directory into a
 single JSON object, which you can pipe out to another file if you want. It can
 then be used in a transformation (below).
 
@@ -192,8 +192,8 @@ you will experience unexpected behavior!
 
     $ codepaint xform -i infer.js "**/*.js"
 
-Transforms all .js files under the current directory with the style inferred
-from infer.js
+Transforms all .js files under the current directory with the formatting style
+inferred from infer.js
 
     $ codepaint xform -p idiomatic "**/*.js"
 

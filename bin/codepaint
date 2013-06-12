@@ -51,7 +51,7 @@ program
 	.description('Code Painter beautifies JavaScript.')
 
 	.command('infer <globs>...')
-		.description('Infer coding style from file(s)')
+		.description('Infer formatting style from file(s)')
 		.action(infer)
 		.option('-d, --details',        'give a detailed report with trend scores')
 		.on('help', function(cmd){
@@ -64,7 +64,7 @@ program
 		}).parent
 
 	.command('xform <globs>...')
-		.description('Transform file(s) to specified style')
+		.description('Transform file(s) to specified formatting style')
 		.action(xform)
 		.option('-i, --infer <glob>',           'code sample(s) to infer')
 		.option('-p, --predef <name>',          'cascade predefined style (e.g., idiomatic)')
