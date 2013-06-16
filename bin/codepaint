@@ -10,7 +10,7 @@ var path = require('path');
 var program = require('gitlike-cli');
 
 var codepainter = require('../');
-var package = require("../package.json");
+var package = require('../package');
 var Transformer = require('../lib/Transformer');
 
 
@@ -24,7 +24,7 @@ function setting(val) {
 function keyValue(val, store) {
 	val = val.split('=');
 	store[val[0]] = parseValue(val[1]);
-	return val;
+	return store;
 }
 
 function parseValue(value){
@@ -94,6 +94,8 @@ function infer(args, options) {
 }
 
 function xform(args, options) {
+
+	style = {};
 
 	var transformer = new Transformer();
 
