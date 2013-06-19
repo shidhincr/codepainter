@@ -55,7 +55,7 @@ function testInferrance(Rule, setting) {
 		var samplePath = verifyPath(setting.folder + 'sample.js');
 		if (fs.existsSync(samplePath)) {
 			it('infers ' + styleKey + ' setting as ' + styleValue, function(done) {
-				codepainter.infer([samplePath], function(inferredStyle) {
+				codepainter.infer(samplePath, function(inferredStyle) {
 					styleValue.should.equal(inferredStyle[styleKey]);
 					done();
 				}, Rule);
