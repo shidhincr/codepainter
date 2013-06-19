@@ -206,7 +206,7 @@ available at this time are mediawiki and hautelook.
 Transforms all .js files under the current directory with a custom style in
 JSON format.
 
-    $ codepaint xform -s indent\_style=space -s indent\_size=4 "**/*.js"
+    $ codepaint xform -s indent_style=space -s indent_size=4 "**/*.js"
 
 Transforms all .js files under the current directory with 2 settings:
 `indent_style=space` and `indent_size=4`. You can specify as many settings as
@@ -275,12 +275,12 @@ cascade your styles and report how the cascade has been performed, like so:
     only makes sense if you are using the `--editor-config` CLI option. This
     allows you to, for example, skip a vendor scripts directory.
 
-1.  EditorConfig properties: **indent\_style**, **indent\_size**,
-    **end\_of\_line**, **trim\_trailing\_whitespace** and
-    **insert\_final\_newline**. Refer to [EditorConfig's documentation][] for
+1.  EditorConfig properties: **indent_style**, **indent_size**,
+    **end_of_line**, **trim_trailing_whitespace** and
+    **insert_final_newline**. Refer to [EditorConfig's documentation][] for
     more information.
 
-1.  **quote\_type**: *single*, *double*, *auto*
+1.  **quote_type**: *single*, *double*, *auto*
 
     Specifies what kind of quoting you would like to use for string literals:
 
@@ -296,21 +296,21 @@ cascade your styles and report how the cascade has been performed, like so:
     `console.log("Foo \"Bar\" Baz")` -> `console.log('Foo "Bar" Baz')` or
     `console.log('Foo \'Bar\' Baz')` -> `console.log("Foo 'Bar' Baz")`
 
-1.  **space\_after\_control\_statements**: *true*, *false*
+1.  **space_after_control_statements**: *true*, *false*
 
     Specifies whether or not there should be a space between if/for/while and
     the following open paren.
 
     `if(x === 4)` -> `if (x === 4)` or `while (foo()) {` -> `while(foo()) {`
 
-1.  **space\_after\_anonymous\_functions**: *true*, *false*
+1.  **space_after_anonymous_functions**: *true*, *false*
 
     Specifies whether or not there should be a space between the `function`
     keyword and the following parens in anonymous functions.
 
     `function(x) { }` -> `function (x) { }`
 
-1.  **spaces\_around\_operators**: *true*, *false*, *hybrid*
+1.  **spaces_around_operators**: *true*, *false*, *hybrid*
 
     Specifies whether or not there should be spaces around operators such as
     `+,=,+=,>=,!==`.
@@ -323,7 +323,7 @@ cascade your styles and report how the cascade has been performed, like so:
 
     `var x = 4 * 2 + 1 / 7;` -> `var x = 4*2 + 1/7;`
 
-1.  **spaces\_in\_brackets**: *true*, *false*, *hybrid*
+1.  **spaces_in_brackets**: *true*, *false*, *hybrid*
 
     Specifies whether or not there should be spaces inside brackets, which
     includes `(),[],{}`. Empty pairs of brackets will always be shortened.
