@@ -276,8 +276,9 @@ cascade your styles and report how the cascade has been performed, like so:
     allows you to, for example, skip a vendor scripts directory.
 
 1.  EditorConfig properties: **indent\_style**, **indent\_size**,
-    **trim\_trailing\_whitespace** and **insert\_final\_newline**. Refer to
-    [EditorConfig's documentation][] for more information.
+    **end\_of\_line**, **trim\_trailing\_whitespace** and
+    **insert\_final\_newline**. Refer to [EditorConfig's documentation][] for
+    more information.
 
 1.  **quote\_type**: *single*, *double*, *auto*
 
