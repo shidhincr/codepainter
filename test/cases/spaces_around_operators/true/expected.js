@@ -1,6 +1,6 @@
 var x, y,
     a = x++ + --y,
-    b = ! x && ~ y || x * y & x / y | x % y | + x | - y,
+    b = !x && ~y || x * y & x / y | x % y | +x | -y,
     c = x + y || x - y,
     d = x << y & x >> y | x >>> y,
     e = x < y || x <= y && x > y || x >= y,
@@ -30,3 +30,6 @@ switch(true) {
 }
 
 var x = (true) ? 4 : 2;
+
+var x = !!y;
+var x = ~y;

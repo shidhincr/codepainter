@@ -30,3 +30,6 @@ switch(true) {
 }
 
 var x = (true) ? 4 : 2;
+
+var x = !!y;
+var x = ~y;
