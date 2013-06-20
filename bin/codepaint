@@ -180,11 +180,12 @@ function error(msg){
 }
 
 function displayFinalMessage(transformed, skipped, errored) {
-	console.log('');
+	console.log();
+	console.log();
 	var msg = '  REPORT: %s transformed. %s errored. %s skipped (no rules).';
 	if (useColor) {
 		msg = clc.magenta(msg);
 	}
 	console.log(msg, transformed, errored, skipped);
-	console.log('');
+	console.log();
 }
