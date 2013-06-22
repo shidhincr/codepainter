@@ -1,10 +1,10 @@
 var assert = require('assert');
-var crypto = require('crypto');
+var editorconfig = require('editorconfig');
 var fs = require('fs');
 var glob = require('glob');
-var should = require('should');
-var editorconfig = require('editorconfig');
+var MemoryStream = require('memorystream');
 var path = require('path');
+var should = require('should');
 
 var Pipe = require('../lib/Pipe');
 var codepainter = require('../codepainter');
@@ -76,12 +76,16 @@ function testTransformation(setting) {
 	setting.name = folders[folders.length - 2];
 	it('formats ' + setting.name + ' setting properly', function(done) {
 		var inputPath = setting.folder + 'input.js';
-		var outputPath = generateTempPath(inputPath);
 		var expectedPath = verifyPath(setting.folder + 'expected.js');
 		var transformer = new Transformer();
+
+		var outputStream = new MemoryStream();
+		var output = '';
+		outputStream.on('data', function(chunk) {
+			output += chunk;
+		});
+
 		transformer.on('transform', function() {
-			var output = fs.readFileSync(outputPath, 'utf8');
-			fs.unlink(outputPath);
 			var expected = fs.readFileSync(expectedPath, 'utf8');
 			expected.should.equal(output);
 			done();
@@ -89,14 +93,7 @@ function testTransformation(setting) {
 		transformer.transform(inputPath, {
 			style : setting.styles,
 			isTesting : true,
-			output : outputPath
+			output : outputStream
 		});
 	});
-}
-
-function generateTempPath(inputPath) {
-	return [
-	path.dirname(inputPath),
-		'_' + crypto.randomBytes(4).readUInt32LE(0) + '.tmp'
-	].join(path.sep);
 }

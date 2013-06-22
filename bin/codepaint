@@ -99,8 +99,10 @@ function xform(args, options) {
 	style = {};
 
 	var transformer = new Transformer();
+	var errors = [];
+	var reportProgress = !!(options.output || args.globs.length);
 
-	if (!options.output) {
+	if (reportProgress) {
 
 		transformer.on('cascade', cascade);
 
@@ -108,7 +110,6 @@ function xform(args, options) {
 			writeDot('.');
 		});
 
-		var errors = [];
 		var errorDot = useColor ? clc.red('.') : '.';
 		transformer.on('error', function(err, inputPath){
 			err.inputPath = inputPath;
@@ -118,13 +119,13 @@ function xform(args, options) {
 	}
 
 	transformer.on('end', function(err, transformed, skipped, errored){
-		if (errors.length && !options.output) {
+		if (errors.length && reportProgress) {
 			console.log();
 		}
 		errors.forEach(function(err2){
 			error(err2.message + ': ' + err2.inputPath);
 		});
-		if (!options.output) {
+		if (reportProgress) {
 			displayFinalMessage(transformed, skipped, errored);
 		}
 		if (err) process.exit(1);
