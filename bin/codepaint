@@ -71,6 +71,7 @@ program
 		.option('-j, --json <path>',            'cascade JSON style over predef style')
 		.option('-s, --style <key>=<value>',    'cascade explicit style over JSON', setting)
 		.option('-e, --editor-config',          'cascade EditorConfig style over all others')
+		.option('-o, --output',                 'output a single transformation to one file')
 		.on('help', function(cmd){
 			cmd.outputIndented('Examples', [
 				'$ ' + clc.cyan('codepaint xform "**/*.js"'),
@@ -99,28 +100,33 @@ function xform(args, options) {
 
 	var transformer = new Transformer();
 
-	transformer.on('cascade', cascade);
+	if (!options.output) {
 
-	transformer.on('transform', function(transformed, path){
-		writeDot('.');
-	});
+		transformer.on('cascade', cascade);
 
-	var errors = [];
-	var errorDot = useColor ? clc.red('.') : '.';
-	transformer.on('error', function(err, inputPath){
-		err.inputPath = inputPath;
-		errors.push(err);
-		writeDot(errorDot);
-	});
+		transformer.on('transform', function(transformed, path){
+			writeDot('.');
+		});
+
+		var errors = [];
+		var errorDot = useColor ? clc.red('.') : '.';
+		transformer.on('error', function(err, inputPath){
+			err.inputPath = inputPath;
+			errors.push(err);
+			writeDot(errorDot);
+		});
+	}
 
 	transformer.on('end', function(err, transformed, skipped, errored){
-		if (errors.length) {
+		if (errors.length && !options.output) {
 			console.log();
 		}
 		errors.forEach(function(err2){
 			error(err2.message + ': ' + err2.inputPath);
 		});
-		displayFinalMessage(transformed, skipped, errored);
+		if (!options.output) {
+			displayFinalMessage(transformed, skipped, errored);
+		}
 		if (err) process.exit(1);
 	});
 

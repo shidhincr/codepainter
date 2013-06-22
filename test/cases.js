@@ -1,8 +1,10 @@
 var assert = require('assert');
+var crypto = require('crypto');
 var fs = require('fs');
 var glob = require('glob');
 var should = require('should');
 var editorconfig = require('editorconfig');
+var path = require('path');
 
 var Pipe = require('../lib/Pipe');
 var codepainter = require('../codepainter');
@@ -73,17 +75,28 @@ function testTransformation(setting) {
 	var folders = setting.folder.split('/');
 	setting.name = folders[folders.length - 2];
 	it('formats ' + setting.name + ' setting properly', function(done) {
+		var inputPath = setting.folder + 'input.js';
+		var outputPath = generateTempPath(inputPath);
 		var expectedPath = verifyPath(setting.folder + 'expected.js');
 		var transformer = new Transformer();
-		transformer.on('test', function(err, output) {
-			if (err) throw err;
-			var expected = fs.readFileSync(expectedPath, 'utf-8');
+		transformer.on('transform', function() {
+			var output = fs.readFileSync(outputPath, 'utf8');
+			fs.unlink(outputPath);
+			var expected = fs.readFileSync(expectedPath, 'utf8');
 			expected.should.equal(output);
 			done();
 		});
-		transformer.transform(setting.folder + 'input.js', {
+		transformer.transform(inputPath, {
 			style : setting.styles,
-			isTesting : true
+			isTesting : true,
+			output : outputPath
 		});
 	});
+}
+
+function generateTempPath(inputPath) {
+	return [
+	path.dirname(inputPath),
+		'_' + crypto.randomBytes(4).readUInt32LE(0) + '.tmp'
+	].join(path.sep);
 }
