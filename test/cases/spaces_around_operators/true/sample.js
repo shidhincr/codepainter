@@ -21,13 +21,18 @@ x ^= y;
 x |= y;
 
 switch(true) {
-    case 'foo' :
+    case 'foo':
         break;
-    case true :
+    case true:
         break;
-    default :
+    default:
         break;
 }
+
+var x = {
+    foo: 'bar',
+    'baz': 'qux'
+};
 
 var x = (true) ? 4 : 2;
 

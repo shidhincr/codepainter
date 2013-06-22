@@ -21,3 +21,17 @@ x ^= y;
 x |= y;
 x = !!y;
 x = ~y;
+
+switch(true) {
+    case 'foo':
+        break;
+    case true:
+        break;
+    default:
+        break;
+}
+
+var x = {
+    foo: 'bar',
+    'baz': 'qux'
+};
