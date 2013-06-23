@@ -101,7 +101,7 @@ function xform(args, options) {
 	var transformer = new Transformer();
 	var errors = [];
 	var outputToStdout = args.globs[0] === process.stdout;
-	var reportProgress = !!(options.output || outputToStdout);
+	var reportProgress = !!(options.output || outputToStdout || args.globs.length);
 
 	if (reportProgress) {
 

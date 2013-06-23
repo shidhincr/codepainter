@@ -17,3 +17,6 @@ spaces_in_brackets = false
 [*.{json,yml}]
 indent_style = space
 indent_size = 2
+
+[**/node_modules/**.js]
+codepaint = false
