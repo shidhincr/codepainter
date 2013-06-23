@@ -71,7 +71,7 @@ program
 		.option('-j, --json <path>',            'cascade JSON style over predef style')
 		.option('-s, --style <key>=<value>',    'cascade explicit style over JSON', setting)
 		.option('-e, --editor-config',          'cascade EditorConfig style over all others')
-		.option('-o, --output',                 'output a single transformation to one file')
+		.option('-o, --output <path>',          'output a single transformation to one file')
 		.on('help', function(cmd){
 			cmd.outputIndented('Examples', [
 				'$ ' + clc.cyan('codepaint xform "**/*.js"'),
@@ -100,8 +100,7 @@ function xform(args, options) {
 
 	var transformer = new Transformer();
 	var errors = [];
-	var outputToStdout = args.globs[0] === process.stdout;
-	var reportProgress = !!(options.output || outputToStdout || args.globs.length);
+	var reportProgress = !!options.output;
 
 	if (reportProgress) {
 
