@@ -317,9 +317,15 @@ cascade your styles and report how the cascade has been performed, like so:
 
     `var x = 4;` -> `var x=4;` or `a>=b` -> `a >= b` or `a>>2` -> `a >> 2`
 
+    Unary operators `!,~,+,-` are an exception to the rule; thus, no spaces
+    are added. Also, any non-conditional `:` operators do not receive a space
+    (i.e., the switch...case operator and property identifiers).
+
+    `case 'foo' :` always becomes `case 'foo':` and `{foo : 'bar'}` becomes
+    `{foo: 'bar'}`.
+
     *Hybrid* mode is mostly like the *true* setting, except it behaves as
-    *false* on operators `*,/,%` and unary operators `!,~,+,-`, not to be
-    confused with the `+` and `-` addition and subtraction operators.
+    *false* on operators `*,/,%`.
 
     `var x = 4 * 2 + 1 / 7;` -> `var x = 4*2 + 1/7;`
 
