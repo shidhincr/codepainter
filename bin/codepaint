@@ -100,9 +100,9 @@ function xform(args, options) {
 
 	var transformer = new Transformer();
 	var errors = [];
-	var reportProgress = !!options.output;
+	var showReport = args.globs[0] !== process.stdin;
 
-	if (reportProgress) {
+	if (showReport) {
 
 		transformer.on('cascade', cascade);
 
@@ -119,13 +119,13 @@ function xform(args, options) {
 	}
 
 	transformer.on('end', function(err, transformed, skipped, errored){
-		if (errors.length && reportProgress) {
+		if (errors.length && showReport) {
 			console.log();
 		}
 		errors.forEach(function(err2){
 			error(err2.message + ': ' + err2.inputPath);
 		});
-		if (reportProgress) {
+		if (showReport) {
 			displayFinalMessage(transformed, skipped, errored);
 		}
 		if (err) process.exit(1);
