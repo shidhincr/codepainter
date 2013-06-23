@@ -212,7 +212,7 @@ Transforms all .js files under the current directory with 2 settings:
 `indent_style=space` and `indent_size=4`. You can specify as many settings as
 you want and you can set values to `null` to disable them.
 
-    $ codepaint xform -e /usr/local/bin/editorconfig "**/*.js"
+    $ codepaint xform -e "**/*.js"
 
 Transforms all .js files under the current directory with the EditorConfig
 settings defined for each individual file.
@@ -222,7 +222,7 @@ Refer to [EditorConfig Core Installation][] for installation instructions and
 `.editorconfig` files.
 
     $ codepaint xform -i infer.js -p idiomatic -j custom.json
-    -s end_of_line=null -e /usr/local/bin/editorconfig "**/*.js"
+    -s end_of_line=null -e  "**/*.js"
 
 As you can see, you can use as many options as you want. Code Painter will
 cascade your styles and report how the cascade has been performed, like so:
@@ -246,9 +246,9 @@ cascade your styles and report how the cascade has been performed, like so:
    = insert_final_newline = true
    = quote_type = auto
    * spaces_around_operators = true
-   = space_after_control_statements = false
+   = space_after_control_statements = true
    = space_after_anonymous_functions = false
-   * spaces_in_brackets = hybrid
+   * spaces_in_brackets = false
 
   Supplied JSON file:
    * space_after_control_statements = true
@@ -340,6 +340,60 @@ cascade your styles and report how the cascade has been performed, like so:
     [Idiomatic Style Manifesto][].
 
 
+## Pipes and Redirects
+
+On a unix command-line, you can transform a file from the stdin stream:
+
+    $ codepaint xform -s indent_size=2 < input.js
+
+The stdout stream works a bit differently. Since Code Painter can transform
+multiple files via glob syntax, it wouldn't make sense to output the
+transformations of all those files to a single stream. Instead, only if you
+are using stdin as input and no `-o, --output` option is provided will Code
+Painter send the transformation to the stdout stream:
+
+    $ codepaint xform -s indent_size=2 < input.js > output.js
+
+Piping is supported as well:
+
+    $ codepaint xform -s indent_size=2 < input.js | othercommand`
+
+
+## Git Clean and Smudge Filters
+
+Because Code Painter supports stdin and stdout streams, as explained above,
+Git "clean" and "smudge" filters can be used as well.
+
+CAUTION: My personal experience has shown inconsistent results, so use with
+caution! Also, please contact me if you figure out how to do this without any
+hiccups.
+
+First, change your `.gitattributes` file to use your new filter. We'll call it
+"codepaint".
+
+    *.js   filter=codepaint
+
+Then, tell Git what the "codepaint" filter does. First, we will convert code
+to tabs upon checkout with the "smudge" filter:
+
+    $ git config filter.codepaint.smudge "codepaint xform -s indent_style=tab"
+
+Then, upon staging of files with the Git "clean" filter, the style is restored
+to spaces and cleaned to reflect any other style preferences you may have set:
+
+    $ git config filter.codepaint.clean "codepaint xform -p style.json"
+
+This allows you to work in the indentation of your preference without stepping
+on anyone's toes and checking in inconsistent indentation. Or maybe you have
+your own preference for spaces around operators? Smudge it to your preference
+and clean it to your company's formatting style.
+
+WARNING: Git "clean" and "smudge" filters are bypassed with Git for Windows.
+
+Refer to [Git's documentation][] for more information on Git "smudge" and
+"clean" filters.
+
+
 ## Recommended Use
 
 It is highly recommended that you use the EditorConfig approach to painting
@@ -348,11 +402,45 @@ your code. These are the steps you would follow to do so:
 1.  Place an `.editorconfig` file at your project root. Refer to this
     project's [.editorconfig][] file for a point of reference as to how this
     might look. You can also scatter `.editorconfig` files elsewhere
-    throughout your project to prevent CodePainter from doing any
+    throughout your project to prevent Code Painter from doing any
     transformations (e.g., your vendor scripts folders). In this case, the
     `.editorconfig` file would simply read: `codepaint = false`.
 
-1.  Install CodePainter for global use with `npm install -g codepainter`.
+1.  Specify Code Painter in your devDependencies section of your package.json:
+
+```json
+{
+    "devDependencies": {
+        "codepainter": "~0.3.10"
+    }
+}
+```
+
+1.  Define a `codepaint` script in the scripts section of your package.json:
+
+```json
+{
+    "scripts": {
+        "codepaint": "node node_modules/codepainter/bin/codepaint xform -e **/**.js"
+    }
+}
+```
+
+    If you have Code Painter installed globally, the command is as simple as:
+
+```json
+{
+    "scripts": {
+        "codepaint": "codepaint xform -e **/**.js"
+    }
+}
+```
+
+    But Code Painter wouldn't install globally by default, so the first
+    approach is the recommended one. Then, you can run Code Painter on your
+    entire project, consistently, with the following command:
+
+    $ npm runscript codepaint
 
 1.  You *could* run `codepaint` manually every time you want to do it, but you
     might find this next `.bashrc` shortcut more useful. The idea is to run
@@ -377,8 +465,14 @@ codepaint_git_commit() {
 }
 ```
 
-Any tips on how to improve this process are greatly appreciated. See the
-[package.json][] file for contact information.
+You could also compare Code Painter's output with the original file on a Git
+pre-commit hook and reject the commit if the files don't match. Let's be real
+though. This would happen almost *every* time you commit and it would be a
+royal pain in your workflow.
+
+There are so many ways you could use Code Painter. How do you prefer to use
+Code Painter? Feel free to contact me, Jed, with tips or suggestions. See
+[package.json][] for contact information).
 
 
 ## License
@@ -395,3 +489,4 @@ Released under the MIT license.
 [Idiomatic Style Manifesto]: /rwldrn/idiomatic.js/#whitespace
 [.editorconfig]: .editorconfig
 [package.json]: package.json
+[Git's documentation]: http://git-scm.com/book/ch7-2.html

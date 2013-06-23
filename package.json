@@ -13,7 +13,8 @@
     "codepainter": "./bin/codepaint"
   },
   "scripts": {
-    "test": "mocha -R spec"
+    "test": "mocha -R spec",
+    "codepaint": "codepaint xform -e **/**.js"
   },
   "repository": {
     "type": "git",
