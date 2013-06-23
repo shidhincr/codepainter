@@ -14,7 +14,7 @@ var Transformer = require('../lib/Transformer');
 
 describe('Code Painter', function() {
 
-	var globOptions = {sync : true};
+	var globOptions = {sync: true};
 
 	glob('test/cases/*', globOptions, function(er, testCases) {
 
@@ -34,8 +34,8 @@ describe('Code Painter', function() {
 				glob('test/cases/' + testCase + '/*/*.json', globOptions, function(er2, stylePaths) {
 					stylePaths.forEach(function(stylePath) {
 						var setting = {
-							folder : stylePath.substr(0, stylePath.lastIndexOf('/') + 1),
-							styles : JSON.parse(fs.readFileSync(stylePath, 'utf-8'))
+							folder: stylePath.substr(0, stylePath.lastIndexOf('/') + 1),
+							styles: JSON.parse(fs.readFileSync(stylePath, 'utf-8'))
 						};
 
 						if (editorconfig.parse(stylePath).test !== true) {
@@ -91,9 +91,9 @@ function testTransformation(setting) {
 			done();
 		});
 		transformer.transform(inputPath, {
-			style : setting.styles,
-			isTesting : true,
-			output : outputStream
+			style: setting.styles,
+			isTesting: true,
+			output: outputStream
 		});
 	});
 }

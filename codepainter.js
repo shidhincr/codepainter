@@ -10,23 +10,23 @@ function CodePainter() {
 
 util.inherits(CodePainter, CodePainterObject, {
 
-	infer : function() {
+	infer: function() {
 		var multiInferrer = new MultiInferrer();
 		multiInferrer.infer.apply(multiInferrer, arguments);
 	},
 
-	xform : function() {
+	xform: function() {
 		this.transform.apply(this, arguments);
 	},
 
-	transform : function() {
+	transform: function() {
 		var transformer = new Transformer();
 		transformer.transform.apply(transformer, arguments);
 	},
 
-	Inferrer : MultiInferrer,
+	Inferrer: MultiInferrer,
 
-	Transformer : Transformer
+	Transformer: Transformer
 });
 
 module.exports = new CodePainter();
