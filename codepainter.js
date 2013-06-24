@@ -16,12 +16,12 @@ util.inherits(CodePainter, CodePainterObject, {
 	},
 
 	xform: function() {
-		this.transform.apply(this, arguments);
+		var transformer = new Transformer();
+		transformer.transform.apply(transformer, arguments);
 	},
 
 	transform: function() {
-		var transformer = new Transformer();
-		transformer.transform.apply(transformer, arguments);
+		this.xform.apply(this, arguments);
 	},
 
 	Inferrer: MultiInferrer,

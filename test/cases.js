@@ -7,9 +7,8 @@ var path = require('path');
 var should = require('should');
 
 var Pipe = require('../lib/Pipe');
-var codepainter = require('../codepainter');
+var codepaint = require('../codepainter');
 var rules = require('../lib/rules');
-var Transformer = require('../lib/Transformer');
 
 
 describe('Code Painter', function() {
@@ -57,7 +56,7 @@ function testInferrance(Rule, setting) {
 		var samplePath = verifyPath(setting.folder + 'sample.js');
 		if (fs.existsSync(samplePath)) {
 			it('infers ' + styleKey + ' setting as ' + styleValue, function(done) {
-				codepainter.infer(samplePath, function(inferredStyle) {
+				codepaint.infer(samplePath, function(inferredStyle) {
 					styleValue.should.equal(inferredStyle[styleKey]);
 					done();
 				}, Rule);
@@ -77,7 +76,6 @@ function testTransformation(setting) {
 	it('formats ' + setting.name + ' setting properly', function(done) {
 		var inputPath = setting.folder + 'input.js';
 		var expectedPath = verifyPath(setting.folder + 'expected.js');
-		var transformer = new Transformer();
 
 		var outputStream = new MemoryStream();
 		var output = '';
@@ -85,15 +83,15 @@ function testTransformation(setting) {
 			output += chunk;
 		});
 
-		transformer.on('transform', function() {
+		var options = {
+			style: setting.styles,
+			output: outputStream
+		};
+
+		codepaint.xform(inputPath, options, function() {
 			var expected = fs.readFileSync(expectedPath, 'utf8');
 			expected.should.equal(output);
 			done();
-		});
-		transformer.transform(inputPath, {
-			style: setting.styles,
-			isTesting: true,
-			output: outputStream
 		});
 	});
 }
