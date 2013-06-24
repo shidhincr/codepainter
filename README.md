@@ -269,69 +269,70 @@ cascade your styles and report how the cascade has been performed, like so:
 
 ## Supported Style Properties
 
-1.  **codepaint**: *false*
+### **codepaint**: *false*
 
-    Tells CodePainter to skip the file (no formatting). This property really
-    only makes sense if you are using the `--editor-config` CLI option. This
-    allows you to, for example, skip a vendor scripts directory.
+Tells CodePainter to skip the file (no formatting). This property really
+only makes sense if you are using the `--editor-config` CLI option. This
+allows you to, for example, skip a vendor scripts directory.
 
-1.  EditorConfig properties: **indent_style**, **indent_size**,
-    **end_of_line**, **trim_trailing_whitespace** and
-    **insert_final_newline**. Refer to [EditorConfig's documentation][] for
-    more information.
+### EditorConfig properties
+**indent_style**, **indent_size**, **end_of_line**,
+**trim_trailing_whitespace** and **insert_final_newline**.
 
-1.  **quote_type**: *single*, *double*, *auto*
+Refer to [EditorConfig's documentation][] for more information.
 
-    Specifies what kind of quoting you would like to use for string literals:
+### **quote_type**: *single*, *double*, *auto*
+
+Specifies what kind of quoting you would like to use for string literals:
 
 ```js
 console.log("Hello world!"); // becomes console.log('Hello world!');
 ```
 
-    Adds proper escaping when necessary, obviously.
+ Adds proper escaping when necessary, obviously.
 
 ```js
 console.log('Foo "Bar" Baz'); // becomes console.log("Foo \"Bar\" Baz");
 ```
 
-    The *auto* setting infers the quoting with a precedence toward *single*
-    mode.
+The *auto* setting infers the quoting with a precedence toward *single*
+mode.
 
 ```js
 console.log("Foo \"Bar\" Baz"); // becomes console.log('Foo "Bar" Baz');
 console.log('Foo \'Bar\' Baz'); // becomes console.log("Foo 'Bar' Baz");
 ```
 
-1.  **space_after_control_statements**: *true*, *false*
+###  **space_after_control_statements**: *true*, *false*
 
-    Specifies whether or not there should be a space between if/for/while and
-    the following open paren:
+Specifies whether or not there should be a space between if/for/while and
+the following open paren:
 
-    If true:
+If true:
 
 ```js
 if(x === 4) {} // becomes if (x === 4) {}
 ```
 
-    If false:
+If false:
 
 ```js
 while (foo()) {} // becomes while(foo()) {}
 ```
 
-1.  **space_after_anonymous_functions**: *true*, *false*
+### **space_after_anonymous_functions**: *true*, *false*
 
-    Specifies whether or not there should be a space between the `function`
-    keyword and the following parens in anonymous functions:
+Specifies whether or not there should be a space between the `function`
+keyword and the following parens in anonymous functions:
 
 ```js
 function(x) {} // becomes function (x) {}
 ```
 
-1.  **spaces_around_operators**: *true*, *false*, *hybrid*
+### **spaces_around_operators**: *true*, *false*, *hybrid*
 
-    Specifies whether or not there should be spaces around operators such as
-    `+,=,+=,>=,!==`.
+Specifies whether or not there should be spaces around operators such as
+`+,=,+=,>=,!==`.
 
 ```js
 x = 4; // becomes x=4;
@@ -339,9 +340,9 @@ a>=b; // becomes a >= b;
 a>>2; // becomes a >> 2;
 ```
 
-    Unary operators `!,~,+,-` are an exception to the rule; thus, no spaces
-    are added. Also, any non-conditional `:` operators do not receive a space
-    (i.e., the switch...case operator and property identifiers):
+Unary operators `!,~,+,-` are an exception to the rule; thus, no spaces
+are added. Also, any non-conditional `:` operators do not receive a space
+(i.e., the switch...case operator and property identifiers):
 
 ```js
 switch (someVar) {
@@ -351,32 +352,32 @@ switch (someVar) {
 }
 ```
 
-    *Hybrid* mode is mostly like the *true* setting, except it behaves as
-    *false* on operators `*,/,%`:
+*Hybrid* mode is mostly like the *true* setting, except it behaves as
+*false* on operators `*,/,%`:
 
 ```js
 var x = 4 * 2 + 1 / 7; // becomes var x = 4*2 + 1/7;
 ```
 
-1.  **spaces_in_brackets**: *true*, *false*, *hybrid*
+###  **spaces_in_brackets**: *true*, *false*, *hybrid*
 
-    Specifies whether or not there should be spaces inside brackets, which
-    includes `(),[],{}`. Empty pairs of brackets will always be shortened.
+Specifies whether or not there should be spaces inside brackets, which
+includes `(),[],{}`. Empty pairs of brackets will always be shortened.
 
-    If true:
+If true:
 
 ```js
 if (x === 4) {} // becomes if ( x === 4 ) {}
 ```
 
-    If false:
+If false:
 
 ```js
 if ( x === 4 ) {} // becomes if (x === 4)
 ```
 
-    The *hybrid* setting mostly reflects Idiomatic style. Refer to
-    [Idiomatic Style Manifesto][].
+The *hybrid* setting mostly reflects Idiomatic style. Refer to
+[Idiomatic Style Manifesto][].
 
 
 ## Pipes and Redirects
