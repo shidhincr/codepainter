@@ -123,11 +123,11 @@ codepaint.infer('**/**.js', {details: true}, function(inferredStyle) {
 Example usage:
 
 ```js
-codepaint.xform('input.js', {indent_size: 4}, function(err, transformed, skipped, errored){
+codepaint.xform('input.js', {indent_size: 4}, function(err, xformed, skipped, errored){
     if (err) {
         throw err;
     }
-    console.log('transformed:', transformed);
+    console.log('transformed:', xformed);
     console.log('skipped:', skipped);
     console.log('errored:', errored);
 });
