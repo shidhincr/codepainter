@@ -108,7 +108,7 @@ var codepaint = require('codepainter');
 Library usage is intended to be every bit the same as CLI usage, so you can
 expect the same options and arguments that the CLI requires.
 
-### .infer(<path|glob|globs|ReadableStream>[,options][,callback])
+### .infer(< path|glob|globs|ReadableStream >[,options][,callback])
 
 Example usage:
 
@@ -118,7 +118,7 @@ codepaint.infer('**/**.js', {details: true}, function(inferredStyle) {
 });
 ```
 
-### .xform(<path|glob|globs|ReadableStream>[,options][,callback])
+### .xform(< path|glob|globs|ReadableStream >[,options][,callback])
 
 Example usage:
 
