@@ -101,26 +101,49 @@ $ codepaint xform --help
 
 ## Library Usage
 
-`.infer(<path|glob|globs|ReadableStream>[,options][,callback])`
-
-`.transform(<path|glob|globs|ReadableStream>[,options])`
+```js
+var codepaint = require('codepainter');
+```
 
 Library usage is intended to be every bit the same as CLI usage, so you can
 expect the same options and arguments that the CLI requires.
 
-The following example infers formatting style from `foo.js` and uses that
+### .infer(<path|glob|globs|ReadableStream>[,options][,callback])
+
+Example usage:
+
+```js
+codepaint.infer('**/**.js', {details: true}, function(inferredStyle) {
+    console.log(inferredStyle);
+});
+```
+
+### .xform(<path|glob|globs|ReadableStream>[,options][,callback])
+
+Example usage:
+
+```js
+codepaint.xform('input.js', {indent_size: 4}, function(err, transformed, skipped, errored){
+    if (err) {
+        throw err;
+    }
+    console.log('transformed:', transformed);
+    console.log('skipped:', skipped);
+    console.log('errored:', errored);
+});
+```
+
+The following example infers formatting style from `sample.js` and uses that
 inferred style to transform all .js files under the current directory.
 
 ```js
-var codepainter = require('codepainter');
-codepainter.infer('foo.js', function(inferredStyle) {
-    codepainter.xform('**/*.js', {json: inferredStyle});
+codepaint.infer('sample.js', function(inferredStyle) {
+    codepainter.xform('**/**.js', {json: inferredStyle});
 });
-
 ```
 
-'foo.js' could also be an array or any readable stream. `xform` is an alias
-for the `transform` method. You can use either one.
+'sample.js' could also be an array or any readable stream. `transform` is an
+alias for the `xform` method. You can use either one.
 
 Great, so that's all nice and simple, but maybe you want to do something with
 the output. We start by creating an instance of the Transformer class.
