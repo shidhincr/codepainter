@@ -476,9 +476,9 @@ If you have Code Painter installed globally, the command is as simple as:
 }
 ```
 
-    But Code Painter wouldn't install globally by default, so the first
-    approach is the recommended one. Then, you can run Code Painter on your
-    entire project, consistently, with the following command:
+But Code Painter wouldn't install globally by default, so the first
+approach is the recommended one. Then, you can run Code Painter on your
+entire project, consistently, with the following command:
 
     $ npm runscript codepaint
 
