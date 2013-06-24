@@ -437,16 +437,16 @@ Refer to [Git's documentation][] for more information on Git "smudge" and
 ## Recommended Use
 
 It is highly recommended that you use the EditorConfig approach to painting
-your code. These are the steps you would follow to do so:
+your code. To do so, do the following:
 
-1.  Place an `.editorconfig` file at your project root. Refer to this
-    project's [.editorconfig][] file for a point of reference as to how this
-    might look. You can also scatter `.editorconfig` files elsewhere
-    throughout your project to prevent Code Painter from doing any
-    transformations (e.g., your vendor scripts folders). In this case, the
-    `.editorconfig` file would simply read: `codepaint = false`.
+Place an `.editorconfig` file at your project root. Refer to this
+project's [.editorconfig][] file for a point of reference as to how this
+might look. You can also scatter `.editorconfig` files elsewhere
+throughout your project to prevent Code Painter from doing any
+transformations (e.g., your vendor scripts folders). In this case, the
+`.editorconfig` file would simply read: `codepaint = false`.
 
-1.  Specify Code Painter in your devDependencies section of your package.json:
+Specify Code Painter in your devDependencies section of your package.json:
 
 ```json
 {
@@ -456,7 +456,7 @@ your code. These are the steps you would follow to do so:
 }
 ```
 
-1.  Define a `codepaint` script in the scripts section of your package.json:
+Define a `codepaint` script in the scripts section of your package.json:
 
 ```json
 {
@@ -482,18 +482,18 @@ entire project, consistently, with the following command:
 
     $ npm runscript codepaint
 
-1.  You *could* run `codepaint` manually every time you want to do it, but you
-    might find this next `.bashrc` shortcut more useful. The idea is to run
-    this `gc` alias to a newly-defined `codepaint_git_commit` function. This,
-    you do instead of running `git commit`. The caveat is that you need to
-    stage your changes with `git add` before doing so. This is because the
-    command runs `codepaint` only on staged `.js` files. Aside from this
-    caveat, you can commit things mostly the same as you were used to before.
-    Now, `gc` can paint your code before a commit and bail-out of the commit
-    if there are issues with the process (e.g., JavaScript parse errors). The
-    idea of formatting code before a commit is definitely controversial, but
-    if you choose to do so anyway, here's the neat trick to put in your
-    `.bashrc` file:
+You *could* run `codepaint` manually every time you want to do it, but you
+might find this next `.bashrc` shortcut more useful. The idea is to run
+this `gc` alias to a newly-defined `codepaint_git_commit` function. This,
+you do instead of running `git commit`. The caveat is that you need to
+stage your changes with `git add` before doing so. This is because the
+command runs `codepaint` only on staged `.js` files. Aside from this
+caveat, you can commit things mostly the same as you were used to before.
+Now, `gc` can paint your code before a commit and bail-out of the commit
+if there are issues with the process (e.g., JavaScript parse errors). The
+idea of formatting code before a commit is definitely controversial, but
+if you choose to do so anyway, here's the neat trick to put in your
+`.bashrc` file:
 
 ```bash
 alias gc=codepaint_git_commit
