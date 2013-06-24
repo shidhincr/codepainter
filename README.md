@@ -1,6 +1,7 @@
 # Code Painter
 
 [![Build Status][]](http://travis-ci.org/jedhunsaker/codepainter)
+[![Dependency Status][]](https://gemnasium.com/jedhunsaker/codepainter)
 
 Code Painter is a JavaScript beautifier that can transform JavaScript files
 into the formatting style of your choice. Style settings can be supplied via
@@ -544,6 +545,7 @@ Code Painter? Feel free to contact me, Jed, with tips or suggestions. See
 Released under the MIT license.
 
 [Build Status]: https://secure.travis-ci.org/jedhunsaker/codepainter.png?branch=master
+[Dependency Status]: https://gemnasium.com/jedhunsaker/codepainter.png
 [Esprima parser]: http://esprima.org/
 [Ariya Hidayat]: http://ariya.ofilabs.com/
 [contributors]: https://github.com/ariya/esprima/graphs/contributors

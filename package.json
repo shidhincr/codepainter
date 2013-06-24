@@ -30,17 +30,17 @@
     "editorconfig"
   ],
   "dependencies": {
-    "async": "~0.2.8",
+    "async": "~0.2.9",
     "cli-color": "~0.2.2",
-    "editorconfig": "~0.11.1",
-    "esprima": "~1.0.2",
+    "editorconfig": "~0.11.3",
+    "esprima": "~1.0.3",
     "gitlike-cli": "~0.0.9",
     "glob": "~3.2.1",
     "memorystream": "~0.2.0",
-    "node.extend": "~1.0.6"
+    "node.extend": "~1.0.7"
   },
   "devDependencies": {
-    "mocha": "1.9.x",
+    "mocha": "~1.11.0",
     "should": "~1.2.2"
   },
   "engine": "node >= 0.10.6",
