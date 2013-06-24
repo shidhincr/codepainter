@@ -427,7 +427,7 @@ Piping is supported as well:
 Because Code Painter supports stdin and stdout streams, as explained above,
 Git "clean" and "smudge" filters can be used as well.
 
-CAUTION: My personal experience has shown inconsistent results, so use with
+**CAUTION:** My personal experience has shown inconsistent results, so use with
 caution! Also, please contact me if you figure out how to do this without any
 hiccups.
 
@@ -451,7 +451,8 @@ on anyone's toes and checking in inconsistent indentation. Or maybe you have
 your own preference for spaces around operators? Smudge it to your preference
 and clean it to your company's formatting style.
 
-WARNING: Git "clean" and "smudge" filters are bypassed with Git for Windows.
+**WARNING:** Git "clean" and "smudge" filters are bypassed with GitHub for
+Windows.
 
 Refer to [Git's documentation][] for more information on Git "smudge" and
 "clean" filters.
