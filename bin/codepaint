@@ -9,7 +9,7 @@ var glob = require('glob');
 var path = require('path');
 var program = require('gitlike-cli');
 
-var codepainter = require('../');
+var codepaint = require('../');
 var package = require('../package');
 var Transformer = require('../lib/Transformer');
 
@@ -89,7 +89,7 @@ program
 
 
 function infer(args, options) {
-	codepainter.infer(args.globs, options, function(style){
+	codepaint.infer(args.globs, options, function(style){
 		console.log(JSON.stringify(style));
 	});
 }
