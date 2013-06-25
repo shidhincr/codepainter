@@ -17,7 +17,7 @@ for (prop in object) {
   // statements
 }
 
-if (true) {
+if (true){
   // statements
 } else {
   // statements

@@ -13,7 +13,7 @@ for (var i = 0; i < 100; i++) {
 
 var prop;
 
-for (prop in object) {
+for (prop in object){
   // statements
 }
 

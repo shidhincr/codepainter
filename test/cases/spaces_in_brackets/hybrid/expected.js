@@ -88,7 +88,7 @@ foo(function() {
   // of the executing function call and the word "function"
 });
 
-foo(function(){});
+foo(function() {});
 
 // Function accepting an array, no space
 foo([ "alpha", "beta" ]);

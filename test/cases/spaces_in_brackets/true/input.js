@@ -70,7 +70,7 @@ var factorial = function factorial(number) {
 
 // 2.B.2.4
 // Constructor Declaration
-function FooBar(options) {
+function FooBar(options){
 
   this.options = options;
 }
@@ -83,7 +83,7 @@ fooBar.options;
 
 // 2.C.1.1
 // Functions with callbacks
-foo(function() {
+foo(function(){
   // Note there is no extra space between the first paren
   // of the executing function call and the word "function"
 });
@@ -102,6 +102,6 @@ foo({
 foo("bar");
 
 // Inner grouping parens, no space
-if (!("foo" in obj)) {
+if (!("foo" in obj)){
 
 }
