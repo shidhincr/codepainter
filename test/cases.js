@@ -90,7 +90,7 @@ function testTransformation(setting) {
 
 		codepaint.xform(inputPath, options, function() {
 			var expected = fs.readFileSync(expectedPath, 'utf8');
-			expected.should.equal(output);
+			output.should.equal(expected);
 			done();
 		});
 	});
