@@ -540,7 +540,7 @@ Code Painter? Feel free to contact me, Jed, with tips or suggestions. See
 [package.json][] for contact information).
 
 
-## Travis
+## Enforcing
 
 Code Painter can be used to enforce a formatting style in a number of creative
 ways. To fail [Travis CI][] if code does not comply with your organization's
