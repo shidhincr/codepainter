@@ -476,7 +476,7 @@ Specify Code Painter in your devDependencies section of your package.json:
 ```json
 {
     "devDependencies": {
-        "codepainter": "~0.3.10"
+        "codepainter": "~0.3.15"
     }
 }
 ```
@@ -505,7 +505,7 @@ But Code Painter wouldn't install globally by default, so the first
 approach is the recommended one. Then, you can run Code Painter on your
 entire project, consistently, with the following command:
 
-    $ npm runscript codepaint
+    $ npm run-script codepaint
 
 You *could* run `codepaint` manually every time you want to do it, but you
 might find this next `.bashrc` shortcut more useful. The idea is to run
@@ -540,6 +540,56 @@ Code Painter? Feel free to contact me, Jed, with tips or suggestions. See
 [package.json][] for contact information).
 
 
+## Travis
+
+Code Painter can be used to enforce a formatting style in a number of creative
+ways. To fail [Travis CI][] if code does not comply with your organization's
+style guide, the process would work something like this:
+
+1. Run Code Painter on the code base.
+1. Fail Travis if any file changes are detected. This encourages developers
+to run Code Painter before pushing code.
+
+Running Code Painter with Travis is as simple as adding the command to the
+`before_script` section of your `.travis.yml` file:
+```yaml
+before_script:
+  - node node_modules/codepainter/bin/codepaint xform -e "**/**.js"
+```
+
+Notice I didn't use the command `npm run-script codepaint`. This is because
+there were issues with the double-quoted glob being processed. If you find a
+way around this, please let me know.
+
+Next, you need to create a node script that exits the node process with a
+non-zero code if any changes are detected. This, we do with `git diff`:
+```js
+var clc = require('cli-color');
+var spawn = require('child_process').spawn;
+var git = spawn('git', ['diff', '--name-only']);
+
+git.stdout.setEncoding('utf8');
+git.stdout.on('data', exitWithErrorIfFilesHaveChanged);
+
+function exitWithErrorIfFilesHaveChanged(data) {
+    console.log();
+    console.log(clc.red('Error: The following files do not conform to the CompanyX style guide:'));
+    console.log(data);
+    process.exit(1);
+}
+```
+
+Finally, you can add this script to your `.travis.yml` file in the `script`
+section:
+```yaml
+script:
+  - node gitdiff.js
+```
+
+Violà! Travis should now fail if code does not comply with your organization's
+style guide.
+
+
 ## License
 
 Released under the MIT license.
@@ -556,3 +606,4 @@ Released under the MIT license.
 [.editorconfig]: .editorconfig
 [package.json]: package.json
 [Git's documentation]: http://git-scm.com/book/ch7-2.html
+[Travis CI]: https://travis-ci.org/
