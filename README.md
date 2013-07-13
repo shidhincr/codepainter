@@ -526,7 +526,7 @@ codepaint_git_commit() {
     # 1. Gets a list of .js files in git staging and sends the list to CodePainter.
     # 2. CodePainter with the -e flag applies rules defined in your EditorConfig file(s).
     # 3. After CodePainter is done, your args are passed to the `git commit` command.
-    codepaint xform -e $(git diff --name-only --cached | egrep '\.js$') && git commit $@
+    codepaint xform -e $(git diff --name-only --cached | egrep '\.js$') && git commit "$@"
 }
 ```
 
