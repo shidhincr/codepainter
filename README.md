@@ -521,12 +521,17 @@ if you choose to do so anyway, here's the neat trick to put in your
 `.bashrc` file:
 
 ```bash
+# Example usage: gc "initial commit"
 alias gc=codepaint_git_commit
 codepaint_git_commit() {
     # 1. Gets a list of .js files in git staging and sends the list to CodePainter.
     # 2. CodePainter with the -e flag applies rules defined in your EditorConfig file(s).
     # 3. After CodePainter is done, your args are passed to the `git commit` command.
-    codepaint xform -e $(git diff --name-only --cached | egrep '\.js$') && git commit "$@"
+    jsfiles=$(git diff --name-only --cached | egrep '\.js$')
+    if [ $jsfiles ]; then
+        ./node_modules/codepainter/bin/codepaint xform -e $jsfiles
+    fi
+    git commit -m "$@"
 }
 ```
 
