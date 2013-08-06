@@ -139,7 +139,7 @@ inferred style to transform all .js files under the current directory.
 
 ```js
 codepaint.infer('sample.js', function(inferredStyle) {
-    codepainter.xform('**/**.js', {json: inferredStyle});
+    codepainter.xform('**/**.js', {style: inferredStyle});
 });
 ```
 
