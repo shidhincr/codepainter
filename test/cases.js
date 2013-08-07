@@ -1,4 +1,3 @@
-var assert = require('assert');
 var editorconfig = require('editorconfig');
 var fs = require('fs');
 var glob = require('glob');

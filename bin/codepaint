@@ -36,13 +36,13 @@ function parseValue(value){
 }
 
 program.on('error', function(err){
-    console.log('');
-    console.log(clc.red('  ' + err.name + ':', err.message));
-    err.command.outputUsage();
-    err.command.outputCommands();
-    err.command.outputOptions();
-    console.log();
-    process.exit(1);
+	console.log('');
+	console.log(clc.red('  ' + err.name + ':', err.message));
+	err.command.outputUsage();
+	err.command.outputCommands();
+	err.command.outputOptions();
+	console.log();
+	process.exit(1);
 });
 
 program
