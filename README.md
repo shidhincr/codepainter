@@ -17,6 +17,11 @@ The name is inspired by Word's Format Painter, which does a similar job for
 rich text.
 
 
+## Requirements
+
+Code Painter requires [Node.js][] version 0.10.6 or above.
+
+
 ## Installation
 
     $ npm install codepainter
@@ -604,6 +609,7 @@ Released under the MIT license.
 [Esprima parser]: http://esprima.org/
 [Ariya Hidayat]: http://ariya.ofilabs.com/
 [contributors]: https://github.com/ariya/esprima/graphs/contributors
+[Node.js]: http://nodejs.org/
 [EditorConfig]: http://editorconfig.org/
 [EditorConfig's documentation]: http://editorconfig.org/
 [EditorConfig Core Installation]: /editorconfig/editorconfig-core#installation
