@@ -19,7 +19,7 @@ describe('codepaint command', function() {
 		var input = path.resolve('test/inputs/input.js');
 		var options = {
 			style: {
-				indent_style : 'tab'
+				indent_style: 'tab'
 			},
 			output: path.resolve('tmp/out.js')
 		};
