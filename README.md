@@ -1,6 +1,6 @@
 # Code Painter
 
-[![Build Status][]](http://travis-ci.org/jedhunsaker/codepainter)
+[![Build Status][]](http://travis-ci.org/jedmao/codepainter)
 [![Dependency Status][]](https://gemnasium.com/jedhunsaker/codepainter)
 
 Code Painter is a JavaScript beautifier that can transform JavaScript files
@@ -11,7 +11,7 @@ you could provide a code snippet from the same project with which the new code
 is intended to integrate.
 
 It uses the excellent [Esprima parser][] by [Ariya Hidayat][] and his
-[contributors][] – thanks!
+[contributors][] ï¿½ thanks!
 
 The name is inspired by Word's Format Painter, which does a similar job for
 rich text.
@@ -596,7 +596,7 @@ script:
   - node gitdiff.js
 ```
 
-Violà! Travis should now fail if code does not comply with your organization's
+Violï¿½! Travis should now fail if code does not comply with your organization's
 style guide.
 
 
@@ -604,7 +604,7 @@ style guide.
 
 Released under the MIT license.
 
-[Build Status]: https://secure.travis-ci.org/jedhunsaker/codepainter.png?branch=master
+[Build Status]: https://secure.travis-ci.org/jedmao/codepainter.png?branch=master
 [Dependency Status]: https://gemnasium.com/jedhunsaker/codepainter.png
 [Esprima parser]: http://esprima.org/
 [Ariya Hidayat]: http://ariya.ofilabs.com/
