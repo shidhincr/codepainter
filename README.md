@@ -11,7 +11,7 @@ you could provide a code snippet from the same project with which the new code
 is intended to integrate.
 
 It uses the excellent [Esprima parser][] by [Ariya Hidayat][] and his
-[contributors][] � thanks!
+[contributors][] — thanks!
 
 The name is inspired by Word's Format Painter, which does a similar job for
 rich text.
@@ -596,7 +596,7 @@ script:
   - node gitdiff.js
 ```
 
-Viol�! Travis should now fail if code does not comply with your organization's
+Violä! Travis should now fail if code does not comply with your organization's
 style guide.
 
 
