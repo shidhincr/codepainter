@@ -2,6 +2,10 @@
 
 [![Build Status][]](http://travis-ci.org/jedmao/codepainter)
 [![Dependency Status][]](https://gemnasium.com/jedhunsaker/codepainter)
+[![NPM version](https://badge.fury.io/js/codepainter.png)](http://badge.fury.io/js/codepainter)
+[![Views](https://sourcegraph.com/api/repos/github.com/jedmao/codepainter/counters/views-24h.png)](https://sourcegraph.com/github.com/jedmao/codepainter)
+
+[![NPM](https://nodei.co/npm/codepainter.png?downloads=true)](https://nodei.co/npm/codepainter/)
 
 Code Painter is a JavaScript beautifier that can transform JavaScript files
 into the formatting style of your choice. Style settings can be supplied via
