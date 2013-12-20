@@ -4,8 +4,8 @@
   "author": "Jakub Wieczorek <jakubw@jakubw.net>",
   "description": "A JavaScript beautifier that can both infer coding style and transform code to reflect that style. You can also set style preferences explicitly in a variety of ways.",
   "contributors": [
-    "Jakub Wieczorek <jakubw@jakubw.net> (http://jakubw.net)",
-    "Jed Hunsaker <jed.hunsaker[at]gmail.com>"
+    "Jed Mao <jed.hunsaker[at]gmail.com>",
+    "Jakub Wieczorek <jakubw@jakubw.net> (http://jakubw.net)"
   ],
   "main": "./codepainter",
   "bin": {
@@ -18,10 +18,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "http://github.com/jedhunsaker/codepainter.git"
+    "url": "http://github.com/jedmao/codepainter.git"
   },
   "bugs": {
-    "url": "https://github.com/jedhunsaker/codepainter/issues"
+    "url": "https://github.com/jedmao/codepainter/issues"
   },
   "keywords": [
     "code",
