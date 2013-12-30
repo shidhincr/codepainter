@@ -1,7 +1,7 @@
 # Code Painter
 
 [![Build Status][]](http://travis-ci.org/jedmao/codepainter)
-[![Dependency Status][]](https://gemnasium.com/jedhunsaker/codepainter)
+[![Dependency Status][]](https://gemnasium.com/jedmao/codepainter)
 [![NPM version](https://badge.fury.io/js/codepainter.png)](http://badge.fury.io/js/codepainter)
 [![Views](https://sourcegraph.com/api/repos/github.com/jedmao/codepainter/counters/views-24h.png)](https://sourcegraph.com/github.com/jedmao/codepainter)
 
@@ -609,7 +609,7 @@ style guide.
 Released under the MIT license.
 
 [Build Status]: https://secure.travis-ci.org/jedmao/codepainter.png?branch=master
-[Dependency Status]: https://gemnasium.com/jedhunsaker/codepainter.png
+[Dependency Status]: https://gemnasium.com/jedmao/codepainter.png
 [Esprima parser]: http://esprima.org/
 [Ariya Hidayat]: http://ariya.ofilabs.com/
 [contributors]: https://github.com/ariya/esprima/graphs/contributors
