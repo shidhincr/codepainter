@@ -622,3 +622,7 @@ Released under the MIT license.
 [package.json]: package.json
 [Git's documentation]: http://git-scm.com/book/ch7-2.html
 [Travis CI]: https://travis-ci.org/
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/jedmao/codepainter/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
