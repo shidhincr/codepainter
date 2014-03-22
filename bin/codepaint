@@ -101,6 +101,7 @@ function xform(args, options) {
 	var transformer = new Transformer();
 	var errors = [];
 	var showReport = args.globs[0] !== process.stdin;
+	args.globs = args.globs.filter(function (ele) { return typeof ele === 'string' });
 
 	if (showReport) {
 
