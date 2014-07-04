@@ -1,6 +1,6 @@
 {
   "name": "codepainter",
-  "version": "0.3.30",
+  "version": "0.3.31",
   "author": "Jakub Wieczorek <jakubw@jakubw.net>",
   "description": "A JavaScript beautifier that can both infer coding style and transform code to reflect that style. You can also set style preferences explicitly in a variety of ways.",
   "contributors": [
