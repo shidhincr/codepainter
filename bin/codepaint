@@ -54,10 +54,13 @@ program
 		.description('Infer formatting style from file(s)')
 		.action(infer)
 		.option('-d, --details',        'give a detailed report with trend scores')
+		.option('--ini',                'use ini file format')
 		.on('help', function(cmd){
 			cmd.outputIndented('Examples', [
 				'$ ' + clc.cyan('codepaint infer "**/*.js"'),
-				'$ codepaint infer ' + clc.cyan('"**/*view.js" "**/*model.js"')
+				'$ codepaint infer ' + clc.cyan('"**/*view.js" "**/*model.js"'),
+				'$ codepaint infer ' + clc.cyan('-d') + ' "**/*.js"',
+				'$ codepaint infer ' + clc.cyan('--ini') + ' "**/*.js"',
 			]);
 		}).parent
 
@@ -87,8 +90,15 @@ program
 
 
 function infer(args, options) {
-	codepaint.infer(args.globs, options, function(style){
-		console.log(JSON.stringify(style));
+	codepaint.infer(args.globs, options, function(style) {
+		if (options.ini) {
+			console.log('[*.js]');
+			Object.keys(style).forEach(function(key) {
+				console.log(key, '=', style[key] + ';');
+			});
+		} else {
+			console.log(JSON.stringify(style));
+		}
 	});
 }
 
