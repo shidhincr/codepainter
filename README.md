@@ -77,8 +77,6 @@ $ codepaint infer --help
 
     $ codepaint infer "**/*.js"
     $ codepaint infer "**/*view.js" "**/*model.js"
-    $ codepaint infer %s "**/*.js" -m
-    $ codepaint infer %s "**/*.js" -e inferred.json
 
 
 $ codepaint xform --help

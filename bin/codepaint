@@ -57,9 +57,7 @@ program
 		.on('help', function(cmd){
 			cmd.outputIndented('Examples', [
 				'$ ' + clc.cyan('codepaint infer "**/*.js"'),
-				'$ codepaint infer ' + clc.cyan('"**/*view.js" "**/*model.js"'),
-				'$ codepaint infer %s "**/*.js" ' + clc.cyan('-m'),
-				'$ codepaint infer %s "**/*.js" ' + clc.cyan('-e inferred.json')
+				'$ codepaint infer ' + clc.cyan('"**/*view.js" "**/*model.js"')
 			]);
 		}).parent
 
