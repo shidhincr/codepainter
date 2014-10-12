@@ -72,13 +72,14 @@ $ codepaint infer --help
 
     -h, --help     output help information
     -d, --details  give a detailed report with trend scores
+    --ini          use ini file format
 
   Examples:
 
     $ codepaint infer "**/*.js"
     $ codepaint infer "**/*view.js" "**/*model.js"
-    $ codepaint infer %s "**/*.js" -m
-    $ codepaint infer %s "**/*.js" -e inferred.json
+    $ codepaint infer -d "**/*.js"
+    $ codepaint infer --ini "**/*.js"
 
 
 $ codepaint xform --help
@@ -216,6 +217,12 @@ Of course, none of these events will fire if you don't perform the transform:
 Infers formatting style from all .js files under the current directory into a
 single JSON object, which you can pipe out to another file if you want. It can
 then be used in a transformation (below).
+
+If you want to create an `.editorconfig` file, use the `--ini` flag:
+
+    $ codepaint infer --ini "**/*.js" > .editorconfig
+
+Moving on to the `xform` sub-command:
 
     $ codepaint xform "**/*.js"
 

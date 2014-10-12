@@ -1,6 +1,6 @@
 {
   "name": "codepainter",
-  "version": "0.3.29",
+  "version": "0.4.4",
   "author": "Jakub Wieczorek <jakubw@jakubw.net>",
   "description": "A JavaScript beautifier that can both infer coding style and transform code to reflect that style. You can also set style preferences explicitly in a variety of ways.",
   "contributors": [
@@ -30,19 +30,20 @@
     "editorconfig"
   ],
   "dependencies": {
-    "async": "^0.6.2",
-    "cli-color": "^0.2.3",
+    "async": "^0.9.0",
+    "cli-color": "^0.3.2",
     "esprima": "git://github.com/ariya/esprima.git#harmony",
     "editorconfig": "^0.11.4",
-    "gitlike-cli": "0.0.10",
-    "glob": "^3.2.9",
+    "esprima": "^1.2.2",
+    "gitlike-cli": "^0.1.0",
+    "glob": "^4.0.6",
     "memorystream": "^0.2.0",
-    "mkdirp": "^0.3.5",
+    "mkdirp": "^0.5.0",
     "node.extend": "^1.0.10"
   },
   "devDependencies": {
-    "mocha": "^1.18.2",
-    "should": "^3.2.0"
+    "mocha": "^1.21.4",
+    "should": "^4.0.4"
   },
   "engine": "node >= 0.10.6",
   "license": "MIT"
