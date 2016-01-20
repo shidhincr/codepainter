@@ -2,7 +2,7 @@
 
 [![Build Status][]](http://travis-ci.org/jedmao/codepainter)
 [![Dependency Status][]](https://gemnasium.com/jedmao/codepainter)
-[![NPM version](https://badge.fury.io/js/codepainter.png)](http://badge.fury.io/js/codepainter)
+[![NPM version](https://badge.fury.io/js/codepainter.svg)](http://badge.fury.io/js/codepainter)
 [![Views](https://sourcegraph.com/api/repos/github.com/jedmao/codepainter/counters/views-24h.png)](https://sourcegraph.com/github.com/jedmao/codepainter)
 
 [![NPM](https://nodei.co/npm/codepainter.png?downloads=true)](https://nodei.co/npm/codepainter/)
@@ -615,8 +615,8 @@ style guide.
 
 Released under the MIT license.
 
-[Build Status]: https://secure.travis-ci.org/jedmao/codepainter.png?branch=master
-[Dependency Status]: https://gemnasium.com/jedmao/codepainter.png
+[Build Status]: https://secure.travis-ci.org/jedmao/codepainter.svg?branch=master
+[Dependency Status]: https://gemnasium.com/jedmao/codepainter.svg
 [Esprima parser]: http://esprima.org/
 [Ariya Hidayat]: http://ariya.ofilabs.com/
 [contributors]: https://github.com/ariya/esprima/graphs/contributors
